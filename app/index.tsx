@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import Reacct from "react";
-import Button from "@/components/Button";
 import { useRouter } from "expo-router";
+import CustomButton from "@/components/Button";
 
 interface indexProps {}
 function index() {
@@ -9,7 +9,7 @@ function index() {
   return (
     <View>
       <Text>index</Text>
-      <Button
+      <CustomButton
         title="welecome"
         onPress={() => router.push("/welecome")}
       />

@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import Reacct from "react";
+import Reacct, { useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -14,9 +14,11 @@ import { StatusBar } from "expo-status-bar";
 import { hp, wp } from "@/helpers/common";
 import image from "@/constants/image";
 import { theme } from "@/constants/theme";
+import CustomButton from "@/components/Button";
 
 interface WelecomeProps {}
 function Welecome() {
+  const [loading, setLoaing] = useState(false);
   return (
     <ScreenWrapper bg="white">
       <StatusBar style="dark" />
@@ -36,10 +38,17 @@ function Welecome() {
           </Text>
         </View>
         {/* Get starte button */}
+        <View style={styles.fotter}>
+          <CustomButton
+            title="Getting  started"
+            buttonStyle={{
+              marginHorizontal: wp(3),
+            }}
+            onPress={() => router.back()}
+            loading={loading}
+          />
+        </View>
       </View>
-      {/* <TouchableOpacity onPress={() => router.back()}>
-        <Text>GoBack</Text>
-      </TouchableOpacity> */}
     </ScreenWrapper>
   );
 }
@@ -72,5 +81,10 @@ const styles = StyleSheet.create({
     fontSize: hp(1.7),
     color: theme.colors.text,
     // marginBottom: hp(10),
+  },
+  fotter: {
+    gap: 30,
+    width: "100%",
+    marginBottom: hp(6),
   },
 });
