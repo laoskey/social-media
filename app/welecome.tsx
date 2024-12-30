@@ -5,6 +5,8 @@ import {
   Button,
   StyleSheet,
   Image,
+  Pressable,
+  Alert,
 } from "react-native";
 import Reacct, { useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
@@ -47,6 +49,27 @@ function Welecome() {
             onPress={() => router.back()}
             loading={loading}
           />
+          <View style={styles.bottomTextContainer}>
+            <Text style={styles.loginText}>
+              Already have an account !
+            </Text>
+            <Pressable
+              onPress={() => {
+                Alert.alert("TODO:Login .?");
+                router.push("/login");
+              }}
+            >
+              <Text
+                style={[
+                  styles.loginText,
+                  { color: theme.colors.primaryDark },
+                  { fontWeight: theme.fonts.semibold as "600" },
+                ]}
+              >
+                Login
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     </ScreenWrapper>
@@ -86,5 +109,16 @@ const styles = StyleSheet.create({
     gap: 30,
     width: "100%",
     marginBottom: hp(6),
+  },
+  bottomTextContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 5,
+  },
+  loginText: {
+    textAlign: "center",
+    color: theme.colors.text,
+    fontSize: hp(1.6),
   },
 });
