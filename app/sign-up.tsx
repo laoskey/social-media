@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import Reacct from "react";
+import React from "react";
 
 interface SignUpProps {}
 function SignUp() {

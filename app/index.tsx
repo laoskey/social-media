@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import Reacct from "react";
+import React from "react";
 import { useRouter } from "expo-router";
 import CustomButton from "@/components/Button";
 

@@ -1,5 +1,4 @@
 import { View, Text } from "react-native";
-import Reacct from "react";
 import React from "react";
 import {
   SafeAreaView,

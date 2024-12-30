@@ -4,7 +4,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
-import Reacct from "react";
+import React from "react";
 import { theme } from "@/constants/theme";
 
 interface LoadingProps {

@@ -8,7 +8,7 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import Reacct, { useState } from "react";
+import React, { useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";

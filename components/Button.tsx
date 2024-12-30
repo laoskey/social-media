@@ -5,7 +5,7 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
-import Reacct from "react";
+import React from "react";
 import { theme } from "@/constants/theme";
 import { hp } from "@/helpers/common";
 import Loading from "./Loading";
