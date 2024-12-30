@@ -1,11 +1,14 @@
 import { View, Text } from "react-native";
 import Reacct from "react";
 import React from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 interface ScreenWrapperProps {
   children: React.ReactNode;
-  bg: string;
+  bg?: string;
 }
 function ScreenWrapper({ children, bg }: ScreenWrapperProps) {
   const { top } = useSafeAreaInsets();
@@ -13,7 +16,7 @@ function ScreenWrapper({ children, bg }: ScreenWrapperProps) {
   const paddingTop = top > 0 ? top + 5 : 30;
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         paddingTop,
@@ -21,7 +24,7 @@ function ScreenWrapper({ children, bg }: ScreenWrapperProps) {
       }}
     >
       {children}
-    </View>
+    </SafeAreaView>
   );
 }
 
