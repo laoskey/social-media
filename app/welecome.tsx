@@ -55,7 +55,7 @@ function Welecome() {
             </Text>
             <Pressable
               onPress={() => {
-                Alert.alert("TODO:Login .?");
+                // Alert.alert("TODO:Login .?");
                 router.push("/login");
               }}
             >
