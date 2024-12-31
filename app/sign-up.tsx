@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  Pressable,
-  Alert,
-} from "react-native";
+import { View, StyleSheet, Text, ScrollView, Pressable, Alert } from "react-native";
 import React, { useRef, useState } from "react";
 import { theme } from "@/constants/theme";
 import ScreenWrapper from "@/components/ScreenWrapper";
@@ -16,6 +9,7 @@ import { hp, wp } from "@/helpers/common";
 import Input from "@/components/TextInput";
 import Icon from "@/assets/hugeicons";
 import CustomButton from "@/components/Button";
+import { supabase } from "@/lib/supabase";
 
 interface SignUpProps {}
 function SignUp() {
@@ -23,20 +17,40 @@ function SignUp() {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const nameRef = useRef("");
-  const confirmRef = useRef("");
+  // const confirmRef = useRef("");
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
-    if (
-      !emailRef.current ||
-      !passwordRef.current ||
-      !nameRef.current ||
-      !confirmRef.current
-    ) {
+    if (!emailRef.current || !passwordRef.current || !nameRef.current) {
       Alert.alert("SignUp", "please fill all the fields ");
       return;
     }
-    // Good to go
+    //  TODO : add the confirm password func
+
+    // AUthentication
+    let name = nameRef.current.trim();
+    let email = emailRef.current.trim();
+    let password = passwordRef.current.trim();
+
+    setLoading(true);
+
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name },
+      },
+    });
+    setLoading(false);
+    console.log("session:", { session });
+    console.log("error", { error });
+
+    if (error) {
+      Alert.alert("SIgn Up", error.message);
+    }
   };
   return (
     <ScreenWrapper bg="white">
@@ -51,9 +65,7 @@ function SignUp() {
           </View>
           {/* Form */}
           <View style={styles.form}>
-            <Text
-              style={{ fontSize: hp(1.5), color: theme.colors.text }}
-            >
+            <Text style={{ fontSize: hp(1.5), color: theme.colors.text }}>
               Please fill the details to create an account
             </Text>
             <Input
@@ -64,26 +76,22 @@ function SignUp() {
             <Input
               icon={<Icon name="mail" />}
               placeholder="Enter your email"
-              onChangeText={(value: any) =>
-                (emailRef.current = value)
-              }
+              onChangeText={(value: any) => (emailRef.current = value)}
             />
             <Input
               icon={<Icon name="lock" />}
               placeholder="Enter your password"
               secureTextEntry
-              onChangeText={(value: any) =>
-                (passwordRef.current = value)
-              }
+              onChangeText={(value: any) => (passwordRef.current = value)}
             />
-            <Input
+            {/* <Input
               icon={<Icon name="lock" />}
               placeholder="Confirm your password"
               secureTextEntry
               onChangeText={(value: any) =>
                 (confirmRef.current = value)
               }
-            />
+            /> */}
 
             {/* Button */}
             <CustomButton
@@ -94,9 +102,7 @@ function SignUp() {
           </View>
           {/* Fotter */}
           <View style={styles.fotter}>
-            <Text style={styles.fotterText}>
-              Already have an account
-            </Text>
+            <Text style={styles.fotterText}>Already have an account</Text>
             <Pressable onPress={() => router.push("/login")}>
               <Text
                 style={[

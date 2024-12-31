@@ -12,7 +12,6 @@ import React from "react";
 import { theme } from "@/constants/theme";
 import { hp } from "@/helpers/common";
 
-interface InputProps {}
 function Input(props: any) {
   return (
     <KeyboardAvoidingView
