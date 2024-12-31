@@ -44,9 +44,9 @@ function SignUp() {
         data: { name },
       },
     });
+    // TODO:2FA
+
     setLoading(false);
-    console.log("session:", { session });
-    console.log("error", { error });
 
     if (error) {
       Alert.alert("SIgn Up", error.message);

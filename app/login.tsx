@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  Pressable,
-  Alert,
-} from "react-native";
+import { View, StyleSheet, Text, ScrollView, Pressable, Alert } from "react-native";
 import React, { useRef, useState } from "react";
 import { theme } from "@/constants/theme";
 import ScreenWrapper from "@/components/ScreenWrapper";
@@ -16,6 +9,7 @@ import { hp, wp } from "@/helpers/common";
 import Input from "@/components/TextInput";
 import Icon from "@/assets/hugeicons";
 import CustomButton from "@/components/Button";
+import { supabase } from "@/lib/supabase";
 
 interface LoginProps {}
 function Login() {
@@ -29,7 +23,22 @@ function Login() {
       Alert.alert("Login", "please fill all the fields ");
       return;
     }
-    // Good to go
+    let email = emailRef.current.trim();
+    let password = passwordRef.current.trim();
+
+    setLoading(true);
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    setLoading(false);
+
+    console.log("error:", { error });
+    if (error) {
+      Alert.alert("Login", error.message);
+      return;
+    }
+
+    router.push("/(main)/home");
   };
   return (
     <ScreenWrapper bg="white">
@@ -44,29 +53,19 @@ function Login() {
           </View>
           {/* Form */}
           <View style={styles.form}>
-            <Text
-              style={{ fontSize: hp(1.5), color: theme.colors.text }}
-            >
-              Please login to continue
-            </Text>
+            <Text style={{ fontSize: hp(1.5), color: theme.colors.text }}>Please login to continue</Text>
             <Input
               icon={<Icon name="mail" />}
               placeholder="Enter your email"
-              onChangeText={(value: any) =>
-                (emailRef.current = value)
-              }
+              onChangeText={(value: any) => (emailRef.current = value)}
             />
             <Input
               icon={<Icon name="lock" />}
               placeholder="Enter your password"
               secureTextEntry
-              onChangeText={(value: any) =>
-                (passwordRef.current = value)
-              }
+              onChangeText={(value: any) => (passwordRef.current = value)}
             />
-            <Text style={styles.forgotPassword}>
-              Forget Password?
-            </Text>
+            <Text style={styles.forgotPassword}>Forget Password?</Text>
             {/* Button */}
             <CustomButton
               title={"Login"}
@@ -76,9 +75,7 @@ function Login() {
           </View>
           {/* Fotter */}
           <View style={styles.fotter}>
-            <Text style={styles.fotterText}>
-              Don't have an account
-            </Text>
+            <Text style={styles.fotterText}>Don't have an account</Text>
             <Pressable onPress={() => router.push("/sign-up")}>
               <Text
                 style={[
