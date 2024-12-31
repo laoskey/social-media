@@ -79,7 +79,7 @@ function Login() {
             <Text style={styles.fotterText}>
               Don't have an account
             </Text>
-            <Pressable>
+            <Pressable onPress={() => router.push("/sign-up")}>
               <Text
                 style={[
                   styles.fotterText,
