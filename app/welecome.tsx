@@ -1,13 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Button,
-  StyleSheet,
-  Image,
-  Pressable,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, Button, StyleSheet, Image, Pressable, Alert } from "react-native";
 import React, { useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { router } from "expo-router";
@@ -35,8 +26,8 @@ function Welecome() {
         <View style={{ gap: 20 }}>
           <Text style={styles.title}>LinkUp!</Text>
           <Text style={styles.punchline}>
-            From breaking news and entertainment to sports and
-            politics, get the full story with all the live commentary.
+            From breaking news and entertainment to sports and politics, get the full story with all the
+            live commentary.
           </Text>
         </View>
         {/* Get starte button */}
@@ -46,13 +37,11 @@ function Welecome() {
             buttonStyle={{
               marginHorizontal: wp(3),
             }}
-            onPress={() => router.back()}
+            onPress={() => router.push("/login")}
             loading={loading}
           />
           <View style={styles.bottomTextContainer}>
-            <Text style={styles.loginText}>
-              Already have an account !
-            </Text>
+            <Text style={styles.loginText}>Already have an account !</Text>
             <Pressable
               onPress={() => {
                 // Alert.alert("TODO:Login .?");

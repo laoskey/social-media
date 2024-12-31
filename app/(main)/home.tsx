@@ -1,12 +1,31 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import React from "react";
+import ScreenWrapper from "@/components/ScreenWrapper";
+import CustomButton from "@/components/Button";
+import { useAuth } from "@/lib/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 interface HomeProps {}
 function Home() {
+  const { setAuth } = useAuth();
+  const onLogout = async () => {
+    // setAuth(null);
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      Alert.alert("Sign out", "Error signing out");
+    }
+  };
   return (
-    <View>
-      <Text>Home</Text>
-    </View>
+    <ScreenWrapper>
+      <ScrollView>
+        <Text>Home</Text>
+        <CustomButton
+          title="Logout"
+          onPress={onLogout}
+        />
+      </ScrollView>
+    </ScreenWrapper>
   );
 }
 
