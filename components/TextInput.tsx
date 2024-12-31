@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import React from "react";
 import { theme } from "@/constants/theme";
 import { hp } from "@/helpers/common";
@@ -6,20 +15,26 @@ import { hp } from "@/helpers/common";
 interface InputProps {}
 function Input(props: any) {
   return (
-    <View
-      style={[
-        styles.container,
-        props.containerStyle && props.containerStyle,
-      ]}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {props.icon && props.icon}
-      <TextInput
-        style={{ flex: 1 }}
-        placeholderTextColor={theme.colors.textLight}
-        ref={props.inputRef && props.inputRef}
-        {...props}
-      />
-    </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View
+          style={[
+            styles.container,
+            props.containerStyle && props.containerStyle,
+          ]}
+        >
+          {props.icon && props.icon}
+          <TextInput
+            style={{ flex: 1 }}
+            placeholderTextColor={theme.colors.textLight}
+            ref={props.inputRef && props.inputRef}
+            {...props}
+          />
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
