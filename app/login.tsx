@@ -32,9 +32,9 @@ function Login() {
 
     setLoading(false);
 
-    console.log("error:", { error });
     if (error) {
       Alert.alert("Login", error.message);
+      console.log("error:", { error });
       return;
     }
 

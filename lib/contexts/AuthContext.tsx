@@ -1,3 +1,4 @@
+import { User } from "@supabase/supabase-js";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
 interface AuthContextType {
@@ -32,7 +33,7 @@ const AuthProvider = ({ children }: AuthProps) => {
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("AuthContext was used out of the AuthPRovider");
+    throw new Error("AuthContext was used out of the AuthProvider");
   }
   return context;
 };

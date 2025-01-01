@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/lib/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { router, Stack } from "expo-router";
+import { User } from "@supabase/supabase-js";
 
 const _layout = () => {
   return (
@@ -18,9 +19,11 @@ function MainLayout() {
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
+      if (session?.user) {
         // set auth
         setAuth(session?.user);
+        // console.log(session.user);
+        updateUserData(session.user);
         // move to home screen
         router.replace("/(main)/home");
       } else {
@@ -33,6 +36,9 @@ function MainLayout() {
     });
   }, []);
 
+  const updateUserData = async (user: User) => {
+    console.log("Update:", user);
+  };
   return (
     <Stack
       screenOptions={{

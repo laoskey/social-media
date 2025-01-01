@@ -7,7 +7,8 @@ import { supabase } from "@/lib/supabase";
 
 interface HomeProps {}
 function Home() {
-  const { setAuth } = useAuth();
+  const { user } = useAuth();
+  console.log(user);
   const onLogout = async () => {
     // setAuth(null);
     const { error } = await supabase.auth.signOut();
@@ -16,6 +17,7 @@ function Home() {
       Alert.alert("Sign out", "Error signing out");
     }
   };
+
   return (
     <ScreenWrapper>
       <ScrollView>
