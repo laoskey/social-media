@@ -15,11 +15,11 @@ const _layout = () => {
 
 interface MainLayoutProps {}
 function MainLayout() {
-  const { setAuth } = useAuth();
+  const { setAuth, user } = useAuth();
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
+      if (session) {
         // set auth
         setAuth(session?.user);
         // console.log(session.user);
@@ -37,8 +37,9 @@ function MainLayout() {
   }, []);
 
   const updateUserData = async (user: User) => {
-    console.log("Update:", user);
+    // console.log("Update:", user);
   };
+  console.log("user", user);
   return (
     <Stack
       screenOptions={{
@@ -48,6 +49,6 @@ function MainLayout() {
   );
 }
 
-export default MainLayout;
+export default _layout;
 
 const styles = StyleSheet.create({});

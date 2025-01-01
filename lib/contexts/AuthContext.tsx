@@ -2,12 +2,9 @@ import { User } from "@supabase/supabase-js";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
 interface AuthContextType {
-  user: null | any;
+  user: null;
   setAuth: (authUser: any) => void;
   setUserData: (userData: any) => void;
-}
-interface AuthProps {
-  children: ReactNode;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -16,7 +13,7 @@ const AuthContext = createContext<AuthContextType>({
   setUserData: () => {},
 });
 
-const AuthProvider = ({ children }: AuthProps) => {
+const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState(null);
 
   const setAuth = (authUser: any) => {

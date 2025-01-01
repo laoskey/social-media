@@ -7,10 +7,9 @@ import { supabase } from "@/lib/supabase";
 
 interface HomeProps {}
 function Home() {
-  const { user } = useAuth();
-  console.log(user);
+  const { user, setAuth } = useAuth();
+
   const onLogout = async () => {
-    // setAuth(null);
     const { error } = await supabase.auth.signOut();
 
     if (error) {

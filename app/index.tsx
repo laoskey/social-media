@@ -9,27 +9,24 @@ import { useAuth } from "@/lib/contexts/AuthContext";
 interface indexProps {}
 function index() {
   const router = useRouter();
-  const { setAuth } = useAuth();
+  // const { setAuth } = useAuth();
 
-  useEffect(() => {
-    supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        // set auth
-        setAuth(session?.user);
-        // move to home screen
-        router.replace("/(main)/home");
-      } else {
-        // set auth null
-        setAuth(null);
-        // move to welecome  // set auth
-
-        router.replace("/welecome");
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   supabase.auth.onAuthStateChange((_event, session) => {
+  //     if (session) {
+  //       router.replace("/(main)/home");
+  //     } else {
+  //       router.replace("/welecome");
+  //     }
+  //   });
+  // }, []);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Loading />
+      <CustomButton
+        title="Go welecome"
+        onPress={() => router.push("/welecome")}
+      />
     </View>
   );
 }
