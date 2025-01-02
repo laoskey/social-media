@@ -3,6 +3,7 @@ import React from "react";
 import { hp } from "@/lib/helpers/common";
 import { theme } from "@/constants/theme";
 import { Image } from "expo-image";
+import { getUserImageSrc } from "@/lib/services/imageService";
 
 interface AvatarProps {
   uri?: string;
@@ -13,7 +14,7 @@ interface AvatarProps {
 function Avatar({ uri, size = hp(4.5), rounded = theme.radius.md, style = {} }: AvatarProps) {
   return (
     <Image
-      source={uri}
+      source={getUserImageSrc(uri)}
       transition={100}
       style={[styles.avatar, { height: size, width: size, borderRadius: rounded }, style]}
     />

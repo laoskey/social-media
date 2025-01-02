@@ -4,7 +4,6 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import CustomButton from "@/components/Button";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
-import Loading from "@/components/Loading";
 import { hp, wp } from "@/lib/helpers/common";
 import { theme } from "@/constants/theme";
 import Icon from "@/assets/hugeicons";
@@ -24,7 +23,7 @@ function Home() {
   };
 
   return (
-    <ScreenWrapper>
+    <ScreenWrapper bg="white">
       <ScrollView>
         <View style={styles.container}>
           {/* Header */}
