@@ -40,7 +40,9 @@ function CustomButton({
       onPress={onPress}
       style={[styles.button, buttonStyle, hasShadow && shadowStyle]}
     >
-      <Text style={[styles.text, textStyle]}>{title}</Text>
+      <View>
+        <Text style={[styles.text, textStyle]}>{title}</Text>
+      </View>
     </Pressable>
   );
 }
