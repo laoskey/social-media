@@ -14,13 +14,14 @@ interface HomeProps {}
 function Home() {
   const { user, setAuth } = useAuth();
 
-  const onLogout = async () => {
-    const { error } = await supabase.auth.signOut();
+  // const onLogout = async () => {
+  //   const { error } = await supabase.auth.signOut();
 
-    if (error) {
-      Alert.alert("Sign out", "Error signing out");
-    }
-  };
+  //   if (error) {
+  //     Alert.alert("Sign out", "Error signing out");
+  //   }
+  // };
+  console.log(user);
 
   return (
     <ScreenWrapper bg="white">
@@ -63,10 +64,10 @@ function Home() {
             </View>
           </View>
         </View>
-        <CustomButton
+        {/* <CustomButton
           title="Logout"
           onPress={onLogout}
-        />
+        /> */}
       </ScrollView>
     </ScreenWrapper>
   );

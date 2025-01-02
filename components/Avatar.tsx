@@ -6,7 +6,7 @@ import { Image } from "expo-image";
 import { getUserImageSrc } from "@/lib/services/imageService";
 
 interface AvatarProps {
-  uri?: string;
+  uri?: string | null;
   size?: number;
   rounded?: number;
   style?: object;
@@ -16,6 +16,8 @@ function Avatar({ uri, size = hp(4.5), rounded = theme.radius.md, style = {} }: 
     <Image
       source={getUserImageSrc(uri)}
       transition={100}
+      contentFit="fill"
+      // contentPosition={"center"}
       style={[styles.avatar, { height: size, width: size, borderRadius: rounded }, style]}
     />
   );

@@ -24,7 +24,7 @@ function MainLayout() {
         // set auth
         setAuth(session?.user);
         // console.log(session.user);
-        updateUserData(session.user);
+        updateUserData(session.user, session.user.email as string);
         // move to home screen
         router.replace("/(main)/home");
       } else {
@@ -37,11 +37,11 @@ function MainLayout() {
     });
   }, []);
 
-  const updateUserData = async (user: User) => {
+  const updateUserData = async (user: User, email: string) => {
     const res = await getUserData(user?.id);
 
     if (res.success) {
-      setUserData(res.data);
+      setUserData({ ...res.data, email });
     }
   };
 
