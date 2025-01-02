@@ -10,20 +10,13 @@ import {
 } from "react-native";
 import React from "react";
 import { theme } from "@/constants/theme";
-import { hp } from "@/helpers/common";
+import { hp } from "@/lib/helpers/common";
 
 function Input(props: any) {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={[
-            styles.container,
-            props.containerStyle && props.containerStyle,
-          ]}
-        >
+        <View style={[styles.container, props.containerStyle && props.containerStyle]}>
           {props.icon && props.icon}
           <TextInput
             style={{ flex: 1 }}

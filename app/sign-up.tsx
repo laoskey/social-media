@@ -5,7 +5,7 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import { StatusBar } from "expo-status-bar";
 import BackButton from "@/components/BackButton";
 import { useRouter } from "expo-router";
-import { hp, wp } from "@/helpers/common";
+import { hp, wp } from "@/lib/helpers/common";
 import Input from "@/components/TextInput";
 import Icon from "@/assets/hugeicons";
 import CustomButton from "@/components/Button";

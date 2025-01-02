@@ -25,7 +25,7 @@ function index() {
       <Loading />
       <CustomButton
         title="Go welecome"
-        onPress={() => router.push("/welecome")}
+        onPress={() => router.push("/(main)/home")}
       />
     </View>
   );

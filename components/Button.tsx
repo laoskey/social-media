@@ -1,13 +1,7 @@
-import {
-  View,
-  Text,
-  Button,
-  Pressable,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Button, Pressable, StyleSheet } from "react-native";
 import React from "react";
 import { theme } from "@/constants/theme";
-import { hp } from "@/helpers/common";
+import { hp } from "@/lib/helpers/common";
 import Loading from "./Loading";
 
 interface CustomButtonProps {
@@ -36,13 +30,7 @@ function CustomButton({
 
   if (loading) {
     return (
-      <View
-        style={[
-          styles.button,
-          buttonStyle,
-          { backgroundColor: "white" },
-        ]}
-      >
+      <View style={[styles.button, buttonStyle, { backgroundColor: "white" }]}>
         <Loading />
       </View>
     );

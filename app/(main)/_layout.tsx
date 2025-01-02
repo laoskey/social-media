@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "@/lib/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { router, Stack } from "expo-router";
 import { User } from "@supabase/supabase-js";
+import { getUserData } from "@/lib/services/useService";
 
 const _layout = () => {
   return (
@@ -15,7 +16,7 @@ const _layout = () => {
 
 interface MainLayoutProps {}
 function MainLayout() {
-  const { setAuth, user } = useAuth();
+  const { setAuth, user, setUserData } = useAuth();
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -37,9 +38,13 @@ function MainLayout() {
   }, []);
 
   const updateUserData = async (user: User) => {
-    // console.log("Update:", user);
+    const res = await getUserData(user?.id);
+
+    if (res.success) {
+      setUserData(res.data);
+    }
   };
-  console.log("user", user);
+
   return (
     <Stack
       screenOptions={{

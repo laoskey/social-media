@@ -4,7 +4,7 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-import { hp, wp } from "@/helpers/common";
+import { hp, wp } from "@/lib/helpers/common";
 import image from "@/constants/image";
 import { theme } from "@/constants/theme";
 import CustomButton from "@/components/Button";
@@ -37,6 +37,7 @@ function Welecome() {
             buttonStyle={{
               marginHorizontal: wp(3),
             }}
+            // TOTO:IMPL when the user us login ,dedirect to the /home page
             onPress={() => router.push("/login")}
             loading={loading}
           />

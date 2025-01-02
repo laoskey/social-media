@@ -4,6 +4,7 @@ import ScreenWrapper from "@/components/ScreenWrapper";
 import CustomButton from "@/components/Button";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
+import Loading from "@/components/Loading";
 
 interface HomeProps {}
 function Home() {
@@ -20,7 +21,7 @@ function Home() {
   return (
     <ScreenWrapper>
       <ScrollView>
-        <Text>Home</Text>
+        <Text>Home </Text>
         <CustomButton
           title="Logout"
           onPress={onLogout}
