@@ -13,12 +13,24 @@ import Input from "@/components/TextInput";
 import CustomButton from "@/components/Button";
 import { updateUser } from "@/lib/services/useService";
 import { router } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
+import image from "@/constants/image";
 
+interface UserImage {
+  uri: string;
+}
+interface User {
+  name: string;
+  phone_number: string;
+  image: string | UserImage | null;
+  bio: string;
+  address: string;
+}
 interface EditProfileProps {}
 function EditProfile() {
   const { user: currentUser, setUserData } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({
+  const [user, setUser] = useState<User>({
     name: "",
     phone_number: "",
     image: "",
@@ -40,18 +52,34 @@ function EditProfile() {
 
   const onPickImage = async () => {
     // TODO :pick image
-    Alert.alert("Pick a image", "image");
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images", "videos"],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.75,
+    });
+
+    if (!result.canceled) {
+      setUserData({ ...user, image: result.assets[0] });
+    }
   };
   const onSubmit = async () => {
     let userData = { ...user };
 
     let { name, address, bio, image, phone_number } = userData;
-    if (!name || !phone_number || !address || !bio) {
+    if (!name || !phone_number || !address || !bio || !image) {
       Alert.alert("Profile", "Please fill all the fields");
       return;
     }
 
     setLoading(true);
+
+    if (typeof image === "object") {
+      // update image
+      // 1>upload image to the supabase storage
+      // 2>update the image url in the user.image field
+      // 2.1>
+    }
     const res = await updateUser(currentUser?.id as string, userData);
     setLoading(false);
     console.log("[Updata user result]:", res);
@@ -62,7 +90,8 @@ function EditProfile() {
     }
   };
 
-  let imageSource = getUserImageSrc(user?.image);
+  let imageSource =
+    user.image && typeof user.image === "object" ? user.image?.uri : getUserImageSrc(user?.image);
   return (
     <ScreenWrapper bg="white">
       <View style={styles.container}>
