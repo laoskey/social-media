@@ -11,10 +11,12 @@ import { useAuth } from "@/lib/contexts/AuthContext";
 import { getUserImageSrc } from "@/lib/services/imageService";
 import Input from "@/components/TextInput";
 import CustomButton from "@/components/Button";
+import { updateUser } from "@/lib/services/useService";
+import { router } from "expo-router";
 
 interface EditProfileProps {}
 function EditProfile() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, setUserData } = useAuth();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     name: "",
@@ -49,7 +51,15 @@ function EditProfile() {
       return;
     }
 
-    // TODO:update data
+    setLoading(true);
+    const res = await updateUser(currentUser?.id as string, userData);
+    setLoading(false);
+    console.log("[Updata user result]:", res);
+
+    if (res.success) {
+      setUserData({ ...currentUser, ...userData });
+      router.back();
+    }
   };
 
   let imageSource = getUserImageSrc(user?.image);

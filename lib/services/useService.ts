@@ -13,3 +13,19 @@ export const getUserData = async (userId: string) => {
     return { success: false, msg: error };
   }
 };
+export const updateUser = async (userId: string, data: any) => {
+  // opyional:build the udate data
+
+  // update data
+  try {
+    const { error } = await supabase.from("users").update(data).eq("id", userId);
+    if (error) {
+      return { success: false, msg: error.message };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.log("[UpdateUser]:", error);
+    return { success: false, msg: error };
+  }
+};
