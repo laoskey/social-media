@@ -8,7 +8,7 @@ import { Image } from "expo-image";
 import { Pressable } from "react-native";
 import Icon from "@/assets/hugeicons";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { getUserImageSrc } from "@/lib/services/imageService";
+import { getUserImageSrc, uploadFile } from "@/lib/services/imageService";
 import Input from "@/components/TextInput";
 import CustomButton from "@/components/Button";
 import { updateUser } from "@/lib/services/useService";
@@ -62,6 +62,8 @@ function EditProfile() {
     if (!result.canceled) {
       setUserData({ ...user, image: result.assets[0] });
     }
+
+    console.log(user.image);
   };
   const onSubmit = async () => {
     let userData = { ...user };
@@ -74,11 +76,15 @@ function EditProfile() {
 
     setLoading(true);
 
-    if (typeof image === "object") {
-      // update image
-      // 1>upload image to the supabase storage
-      // 2>update the image url in the user.image field
-      // 2.1>
+    // update image
+    if (typeof image == "object") {
+      let imageRes = await uploadFile("profile", image?.uri, true);
+
+      if (imageRes.success) {
+        userData.image = imageRes.data as string;
+      } else {
+        userData.image = null;
+      }
     }
     const res = await updateUser(currentUser?.id as string, userData);
     setLoading(false);
