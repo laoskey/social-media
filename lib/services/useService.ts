@@ -20,6 +20,7 @@ export const updateUser = async (userId: string, data: any) => {
   try {
     const { error } = await supabase.from("users").update(data).eq("id", userId);
     if (error) {
+      console.log("[UPDATEUSER:]", error);
       return { success: false, msg: error.message };
     }
 

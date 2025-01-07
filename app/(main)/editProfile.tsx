@@ -51,7 +51,6 @@ function EditProfile() {
   }, [currentUser]);
 
   const onPickImage = async () => {
-    // TODO :pick image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images", "videos"],
       allowsEditing: true,
@@ -69,16 +68,16 @@ function EditProfile() {
     let userData = { ...user };
 
     let { name, address, bio, image, phone_number } = userData;
-    if (!name || !phone_number || !address || !bio || !image) {
+    if (!name || !phone_number || !address || !bio) {
       Alert.alert("Profile", "Please fill all the fields");
       return;
     }
 
     setLoading(true);
-
+    console.log("TYpeOF", typeof image);
     // update image
     if (typeof image == "object") {
-      let imageRes = await uploadFile("profile", image?.uri, true);
+      let imageRes = await uploadFile("profile", image?.uri as string, true);
 
       if (imageRes.success) {
         userData.image = imageRes.data as string;
@@ -86,6 +85,7 @@ function EditProfile() {
         userData.image = null;
       }
     }
+    // update user
     const res = await updateUser(currentUser?.id as string, userData);
     setLoading(false);
     console.log("[Updata user result]:", res);
