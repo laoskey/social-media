@@ -4,7 +4,8 @@ import { supabase } from "../supabase";
 
 export const getUserImageSrc = (imagePath?: string | null) => {
   if (imagePath) {
-    return { uri: imagePath };
+    // return { uri: imagePath };
+    return getSupabaseFileUrl(imagePath);
   } else {
     return require("@/assets/images/avatar.jpg");
   }
@@ -41,4 +42,14 @@ export const uploadFile = async (floderName: string, fileUri: string, isImage = 
 
 export const getFilePath = (floderName: string, isImage: boolean) => {
   return `/${floderName}/${new Date().getTime()}${isImage ? "png" : "mp4"}`;
+};
+
+export const getSupabaseFileUrl = (filepath: string) => {
+  if (filepath) {
+    return {
+      uri: `https://vudhpllljeppzhxagybr.supabase.co/storage/v1/object/public/uploads/${filepath}`,
+    };
+  }
+
+  return null;
 };
