@@ -113,6 +113,7 @@ const UserHeader = ({ user, router, onPress }: { user: any; router: any; onPress
                 <Text style={styles.infoText}>{user && user.phone_number}</Text>
               </View>
             )}
+            {/* TODO:Add the bio icon */}
             {user && user.bio && <Text style={styles.infoText}>{user.bio}</Text>}
           </View>
         </View>
