@@ -59,10 +59,11 @@ function EditProfile() {
     });
 
     if (!result.canceled) {
-      setUserData({ ...user, image: result.assets[0] });
+      setUser({ ...user, image: result.assets[0] });
+      // setUserData({ ...user, image: result.assets[0] });
     }
 
-    console.log(user.image);
+    console.log("Image:", user.image);
   };
   const onSubmit = async () => {
     let userData = { ...user };
@@ -74,13 +75,14 @@ function EditProfile() {
     }
 
     setLoading(true);
-    console.log("TYpeOF", typeof image);
     // update image
     if (typeof image == "object") {
       let imageRes = await uploadFile("profile", image?.uri as string, true);
 
       if (imageRes.success) {
-        userData.image = imageRes.data as string;
+        userData.image = `https://vudhpllljeppzhxagybr.supabase.co/storage/v1/object/public/uploads/${
+          imageRes.data as string
+        }`;
       } else {
         userData.image = null;
       }
@@ -88,7 +90,6 @@ function EditProfile() {
     // update user
     const res = await updateUser(currentUser?.id as string, userData);
     setLoading(false);
-    console.log("[Updata user result]:", res);
 
     if (res.success) {
       setUserData({ ...currentUser, ...userData });

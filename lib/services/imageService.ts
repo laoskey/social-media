@@ -32,7 +32,6 @@ export const uploadFile = async (floderName: string, fileUri: string, isImage = 
       return { success: false, msg: "Can not upload the file " };
     }
 
-    console.log("[UPLOAD_FILE_DATA:]", data);
     return { success: true, data: data.path };
   } catch (error) {
     console.log("[UPLOAD_FILE]:", error);
