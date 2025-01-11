@@ -40,7 +40,7 @@ function RichTextEditor({ editorRef, onChange }: RichTextEditorProps) {
           [actions.heading4]: ({ tintColor }: any) => <Text style={{ color: tintColor }}>H4</Text>,
         }}
         style={styles.richBar}
-        flatContainerStyle={styles.listStyle}
+        flatContainerStyle={styles.flatStyle}
         selectedIconTint={theme.colors.primaryDark}
         editor={editorRef}
         disabled={false}
@@ -64,7 +64,23 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: theme.radius.xl,
     backgroundColor: theme.colors.gray,
   },
-  listStyle: {},
-  rich: {},
-  containerStyle: {},
+
+  rich: {
+    minHeight: 240,
+    flex: 1,
+    borderWidth: 1.5,
+    borderTopWidth: 0,
+    borderBottomLeftRadius: theme.radius.xl,
+    borderBottomRightRadius: theme.radius.xl,
+    borderColor: theme.colors.gray,
+    padding: 5,
+  },
+  containerStyle: {
+    color: theme.colors.textDark,
+    // placeholderColor: "gray",
+  },
+  flatStyle: {
+    paddingHorizontal: 20,
+    gap: 3,
+  },
 });

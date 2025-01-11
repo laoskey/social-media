@@ -48,3 +48,9 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+##Debug
+
+- IF [WITH SOLUTION] Exception in HostFunction: TypeError: expected dynamic type 'array', but had type 'string' in react-native-rich-editor,
+  Go to \node_modules\react-native-pell-rich-editor\src\RichEditor.js
+  And at line 270 change dataDetectorTypes={'none'} to dataDetectorTypes={['none']}
