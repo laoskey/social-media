@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
 import React, { useRef, useState } from "react";
 import CustomButton from "@/components/Button";
 import BackButton from "@/components/BackButton";
@@ -10,6 +10,11 @@ import { useAuth } from "@/lib/contexts/AuthContext";
 import Avatar from "@/components/Avatar";
 import RichTextEditor from "@/components/RichTextEditor";
 import { router, useRouter } from "expo-router";
+import Icon from "@/assets/hugeicons";
+import * as ImagePicker from "expo-image-picker";
+import { getSupabaseFileUrl } from "@/lib/services/imageService";
+import { Image } from "expo-image";
+import { ResizeMode, Video } from "expo-av";
 
 interface NewPostProps {}
 function NewPost() {
@@ -18,7 +23,66 @@ function NewPost() {
   const editorRef = useRef(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState();
+  const [file, setFile] = useState<ImagePicker.ImagePickerAsset | null>(null);
+
+  const onPick = async (isImage: boolean) => {
+    let mediaConfig = {
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3] as [number, number],
+      quality: 0.75,
+    };
+
+    if (!isImage) {
+      mediaConfig = {
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsEditing: true,
+        aspect: [4, 3] as [number, number],
+        quality: 0.75,
+      };
+    }
+    let result = await ImagePicker.launchImageLibraryAsync(mediaConfig);
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setFile(result.assets[0]);
+    }
+  };
+
+  const isLocalFile = (file: any) => {
+    if (!file) {
+      return null;
+    }
+    if (typeof file === "object") {
+      return true;
+    }
+    return false;
+  };
+  const getFileType = (file: any) => {
+    if (!file) {
+      return null;
+    }
+    if (isLocalFile(file)) {
+      return file.type;
+    }
+
+    // Check image or video for remote file
+    if (file.includes("postImage")) {
+      return "image";
+    }
+    return "video";
+  };
+
+  const getFileUri = (file: any) => {
+    if (!file) {
+      return null;
+    }
+    if (isLocalFile(file)) {
+      return file.uri;
+    }
+    return getSupabaseFileUrl(file)?.uri;
+  };
+
+  const onSubmit = async () => {};
   return (
     <ScreenWrapper bg="white">
       <View style={styles.container}>
@@ -43,11 +107,63 @@ function NewPost() {
               onChange={(body: any) => (bodyRef.current = body)}
             />
           </View>
-          {/* Add media */}
-          <View></View>
-          {/* Post button */}
-          <View></View>
+          {file && (
+            <View style={styles.file}>
+              {getFileType(file) === "video" ? (
+                <Video
+                  source={{ uri: getFileUri(file) }}
+                  style={{ flex: 1 }}
+                  useNativeControls
+                  isLooping
+                  resizeMode={ResizeMode.COVER}
+                />
+              ) : (
+                <Image
+                  source={{ uri: getFileUri(file) }}
+                  resizeMode="cover"
+                  style={{ flex: 1 }}
+                />
+              )}
+              <Pressable
+                style={styles.closeIcon}
+                onPress={() => setFile(null)}
+              >
+                <Icon
+                  name="delete"
+                  size={22}
+                  color="white"
+                />
+              </Pressable>
+            </View>
+          )}
+          {/* media */}
+          <View style={styles.media}>
+            <Text style={styles.addImageText}>Add to your post</Text>
+            <View style={styles.mediaIcons}>
+              <TouchableOpacity onPress={() => onPick(true)}>
+                <Icon
+                  name="image"
+                  size={30}
+                  color={theme.colors.dark}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => onPick(false)}>
+                <Icon
+                  name="video"
+                  size={33}
+                  color={theme.colors.dark}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
         </ScrollView>
+        <CustomButton
+          title="Post "
+          buttonStyle={{ height: hp(6.2) }}
+          loading={loading}
+          hasShadow={false}
+          onPress={onSubmit}
+        />
       </View>
     </ScreenWrapper>
   );
@@ -60,6 +176,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    padding: 5,
+    borderRadius: 50,
     // shadowColor: theme.colors.textLight,
     // shadowOffset: { width: 0, height: 3 },
     // shadowOpacity: 0.6,
