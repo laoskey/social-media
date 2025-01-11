@@ -21,7 +21,6 @@ function Home() {
   //     Alert.alert("Sign out", "Error signing out");
   //   }
   // };
-  console.log(user);
 
   return (
     <ScreenWrapper bg="white">

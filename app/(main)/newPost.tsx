@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import React from "react";
+import React, { useRef, useState } from "react";
 import CustomButton from "@/components/Button";
 import BackButton from "@/components/BackButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
@@ -9,10 +9,16 @@ import { hp, wp } from "@/lib/helpers/common";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import Avatar from "@/components/Avatar";
 import RichTextEditor from "@/components/RichTextEditor";
+import { router, useRouter } from "expo-router";
 
 interface NewPostProps {}
 function NewPost() {
   const { user } = useAuth();
+  const bodyRef = useRef("");
+  const editorRef = useRef(null);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState();
   return (
     <ScreenWrapper bg="white">
       <View style={styles.container}>
@@ -32,7 +38,10 @@ function NewPost() {
           </View>
           {/* RichTextEditor */}
           <View style={styles.textEditor}>
-            <RichTextEditor />
+            <RichTextEditor
+              editorRef={editorRef}
+              onChange={(body: any) => (bodyRef.current = body)}
+            />
           </View>
           {/* Add media */}
           <View></View>
