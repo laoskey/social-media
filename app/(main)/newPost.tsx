@@ -1,7 +1,6 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable, Alert } from "react-native";
 import React, { useRef, useState } from "react";
 import CustomButton from "@/components/Button";
-import BackButton from "@/components/BackButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Header from "@/components/Header";
 import { theme } from "@/constants/theme";
@@ -9,18 +8,20 @@ import { hp, wp } from "@/lib/helpers/common";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import Avatar from "@/components/Avatar";
 import RichTextEditor from "@/components/RichTextEditor";
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import Icon from "@/assets/hugeicons";
 import * as ImagePicker from "expo-image-picker";
 import { getSupabaseFileUrl } from "@/lib/services/imageService";
 import { Image } from "expo-image";
 import { ResizeMode, Video } from "expo-av";
+import { createOrUpdatePost } from "@/lib/services/postService";
+import { RichEditor } from "react-native-pell-rich-editor";
 
 interface NewPostProps {}
 function NewPost() {
   const { user } = useAuth();
   const bodyRef = useRef("");
-  const editorRef = useRef(null);
+  const editorRef = useRef<RichEditor>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset | null>(null);
@@ -66,7 +67,7 @@ function NewPost() {
     }
 
     // Check image or video for remote file
-    if (file.includes("postImage")) {
+    if (file.includes("postImages")) {
       return "image";
     }
     return "video";
@@ -82,7 +83,34 @@ function NewPost() {
     return getSupabaseFileUrl(file)?.uri;
   };
 
-  const onSubmit = async () => {};
+  const onSubmit = async () => {
+    if (!bodyRef.current && !file) {
+      Alert.alert("Post", "Please choose an image or add post body");
+    }
+
+    let data = {
+      file,
+      body: bodyRef.current,
+      userId: user?.id,
+    };
+    // create post
+    setLoading(true);
+    let res = await createOrUpdatePost(data);
+    setLoading(false);
+
+    if (res.success) {
+      setFile(null);
+      bodyRef.current = "";
+      editorRef.current?.setContentHTML("");
+      router.back();
+    } else {
+      if ("msg" in res) {
+        Alert.alert("Post", res.msg);
+      } else {
+        Alert.alert("Post", "Something went wrong in create post ");
+      }
+    }
+  };
   return (
     <ScreenWrapper bg="white">
       <View style={styles.container}>
