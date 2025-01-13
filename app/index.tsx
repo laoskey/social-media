@@ -11,15 +11,9 @@ function index() {
   const router = useRouter();
   // const { setAuth } = useAuth();
 
-  // useEffect(() => {
-  //   supabase.auth.onAuthStateChange((_event, session) => {
-  //     if (session) {
-  //       router.replace("/(main)/home");
-  //     } else {
-  //       router.replace("/welecome");
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    router.push("/(main)/home");
+  }, []);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Loading />

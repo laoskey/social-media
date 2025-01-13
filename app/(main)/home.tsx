@@ -79,8 +79,8 @@ function Home() {
           renderItem={(item) => (
             <PostCard
               item={item}
-              currenterUser={user}
-              router={router}
+              currentUser={user}
+              router={() => router}
             />
           )}
         />
