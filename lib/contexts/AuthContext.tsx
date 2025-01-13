@@ -6,7 +6,7 @@ interface AuthContextType {
   setUserData: (userData: any) => void;
 }
 
-interface User {
+export interface User {
   address?: string | null;
   bio?: string | null;
   created_at: string;

@@ -16,6 +16,8 @@ export const createOrUpdatePost = async (post: any) => {
       }
     }
 
+    // TODO:User can post image && video
+    // TODO:uer can post mutilable files include img and video
     // upload posts
     const { data, error } = await supabase.from("posts").upsert(post).select().single();
 
@@ -30,6 +32,28 @@ export const createOrUpdatePost = async (post: any) => {
     return {
       success: false,
       msg: "Could not create your post",
+    };
+  }
+};
+export const fetchPosts = async (limit = 10) => {
+  try {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*,user:users(id,name,image)")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.log("[FETCH_POST_ERROR]", error);
+      return { success: false, msg: "could not fetch the posts" };
+    }
+
+    return { success: true, data: data };
+  } catch (error) {
+    console.log("[FETCH_POST_ERROR]:", error);
+    return {
+      success: false,
+      msg: "Could not fetch the post",
     };
   }
 };

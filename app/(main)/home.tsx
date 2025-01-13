@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, ScrollView, Alert, Pressable } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, ScrollView, Alert, Pressable, FlatList } from "react-native";
+import React, { useEffect, useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import CustomButton from "@/components/Button";
 import { useAuth } from "@/lib/contexts/AuthContext";
@@ -7,67 +7,84 @@ import { supabase } from "@/lib/supabase";
 import { hp, wp } from "@/lib/helpers/common";
 import { theme } from "@/constants/theme";
 import Icon from "@/assets/hugeicons";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import Avatar from "@/components/Avatar";
+import { fetchPosts } from "@/lib/services/postService";
+import PostCard from "@/components/PostCard";
 
+var limit = 0;
 interface HomeProps {}
 function Home() {
   const { user, setAuth } = useAuth();
+  const [posts, setPosts] = useState<any[] | undefined>([]);
+  const router = useRouter();
 
-  // const onLogout = async () => {
-  //   const { error } = await supabase.auth.signOut();
+  useEffect(() => {
+    getPosts();
+  }, []);
 
-  //   if (error) {
-  //     Alert.alert("Sign out", "Error signing out");
-  //   }
-  // };
+  const getPosts = async () => {
+    limit += 10;
+    const res = await fetchPosts(limit);
+    if (res.success) {
+      setPosts(res.data);
+    }
+  };
 
   return (
     <ScreenWrapper bg="white">
-      <ScrollView>
-        <View style={styles.container}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>LinkUp</Text>
-            <View style={styles.icons}>
-              <Pressable onPress={() => router.push("/(main)/notifications")}>
-                <Icon
-                  name="heart"
-                  size={hp(3.2)}
-                  strokeWidth={2}
-                  color={theme.colors.text}
-                />
-              </Pressable>
-              <Pressable onPress={() => router.push("/(main)/newPost")}>
-                <Icon
-                  name="plus"
-                  size={hp(3.2)}
-                  strokeWidth={2}
-                  color={theme.colors.text}
-                />
-              </Pressable>
-              <Pressable onPress={() => router.push("/(main)/profile")}>
-                {/* <Icon
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>LinkUp</Text>
+          <View style={styles.icons}>
+            <Pressable onPress={() => router.push("/(main)/notifications")}>
+              <Icon
+                name="heart"
+                size={hp(3.2)}
+                strokeWidth={2}
+                color={theme.colors.text}
+              />
+            </Pressable>
+            <Pressable onPress={() => router.push("/(main)/newPost")}>
+              <Icon
+                name="plus"
+                size={hp(3.2)}
+                strokeWidth={2}
+                color={theme.colors.text}
+              />
+            </Pressable>
+            <Pressable onPress={() => router.push("/(main)/profile")}>
+              {/* <Icon
                   name="user"
                   size={hp(3.2)}
                   strokeWidth={2}
                   color={theme.colors.text}
                 /> */}
-                <Avatar
-                  uri={user?.image}
-                  size={hp(4.3)}
-                  rounded={theme.radius.sm}
-                  style={{ borderWidth: 2 }}
-                />
-              </Pressable>
-            </View>
+              <Avatar
+                uri={user?.image}
+                size={hp(4.3)}
+                rounded={theme.radius.sm}
+                style={{ borderWidth: 2 }}
+              />
+            </Pressable>
           </View>
         </View>
-        {/* <CustomButton
-          title="Logout"
-          onPress={onLogout}
-        /> */}
-      </ScrollView>
+        {/* posts */}
+        <FlatList
+          data={posts}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listStyle}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={(item) => (
+            <PostCard
+              item={item}
+              currenterUser={user}
+              router={router}
+            />
+          )}
+        />
+      </View>
     </ScreenWrapper>
   );
 }
