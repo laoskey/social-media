@@ -11,6 +11,8 @@ import { useRouter } from "expo-router";
 import Avatar from "@/components/Avatar";
 import { fetchPosts } from "@/lib/services/postService";
 import PostCard from "@/components/PostCard";
+import Loading from "@/components/Loading";
+import { getUserData } from "@/lib/services/useService";
 
 var limit = 0;
 interface HomeProps {}
@@ -19,8 +21,27 @@ function Home() {
   const [posts, setPosts] = useState<any[] | undefined>([]);
   const router = useRouter();
 
+  const handlePostEvent = async (payload: any) => {
+    console.log("Got ost event", payload);
+    if (payload.eventType === "INSERT") {
+      let newPost = { ...payload.new };
+      let res = await getUserData(newPost.userId);
+
+      newPost.user = res.success ? res.data : {};
+      setPosts((prePosts: any) => [newPost, ...prePosts]);
+    }
+  };
   useEffect(() => {
+    //TODO: Refresh posts
+    let postChannel = supabase
+      .channel("posts")
+      .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, handlePostEvent)
+      .subscribe();
     getPosts();
+
+    return () => {
+      supabase.removeChannel(postChannel);
+    };
   }, []);
 
   const getPosts = async () => {
@@ -83,6 +104,11 @@ function Home() {
               router={() => router}
             />
           )}
+          ListFooterComponent={
+            <View style={{ marginBottom: posts?.length === 0 ? 200 : 30 }}>
+              <Loading />
+            </View>
+          }
         />
       </View>
     </ScreenWrapper>

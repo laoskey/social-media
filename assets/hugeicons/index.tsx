@@ -53,6 +53,7 @@ interface IconProps {
   size?: number;
   color?: string;
   strokeWidth?: number;
+  fill?: string;
 }
 
 const Icon = ({ name, ...props }: IconProps) => {

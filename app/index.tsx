@@ -11,9 +11,9 @@ function index() {
   const router = useRouter();
   // const { setAuth } = useAuth();
 
-  useEffect(() => {
-    router.push("/(main)/home");
-  }, []);
+  // useEffect(() => {
+  //   router.push("/(main)/home");
+  // }, []);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Loading />

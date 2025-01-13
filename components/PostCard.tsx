@@ -48,7 +48,9 @@ function PostCard({ item, currentUser, router, hasShadow = true }: PostCardProps
   const openPostDetails = () => {
     // TODO
   };
-  console.log(item.item);
+  //   console.log(item.item);
+  const likes = [];
+  const liked = false;
   return (
     <View style={[styles.container, hasShadow && shandowStyle]}>
       <View style={styles.header}>
@@ -104,6 +106,39 @@ function PostCard({ item, currentUser, router, hasShadow = true }: PostCardProps
             isLooping
           />
         )}
+      </View>
+      {/* like ,comment & share */}
+      <View style={styles.footer}>
+        <View style={styles.fotterButton}>
+          <TouchableOpacity>
+            <Icon
+              name="heart"
+              size={24}
+              color={liked ? theme.colors.rose : theme.colors.textLight}
+              fill={liked ? theme.colors.rose : "transparent"}
+            />
+          </TouchableOpacity>
+          <Text style={styles.count}>{likes?.length}</Text>
+        </View>
+        <View style={styles.fotterButton}>
+          <TouchableOpacity>
+            <Icon
+              name="comment"
+              size={24}
+              color={theme.colors.textLight}
+            />
+          </TouchableOpacity>
+          <Text style={styles.count}>{0}</Text>
+        </View>
+        <View style={styles.fotterButton}>
+          <TouchableOpacity>
+            <Icon
+              name="share"
+              size={24}
+              color={theme.colors.textLight}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
