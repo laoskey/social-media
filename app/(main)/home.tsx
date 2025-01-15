@@ -20,9 +20,10 @@ function Home() {
   const { user, setAuth } = useAuth();
   const [posts, setPosts] = useState<any[] | undefined>([]);
   const router = useRouter();
+  const [hasMore, setHasmMore] = useState(true);
 
   const handlePostEvent = async (payload: any) => {
-    console.log("Got ost event", payload);
+    // console.log("Got ost event", payload);
     if (payload.eventType === "INSERT") {
       let newPost = { ...payload.new };
       let res = await getUserData(newPost.userId);
@@ -45,9 +46,18 @@ function Home() {
   }, []);
 
   const getPosts = async () => {
+    if (!hasMore) {
+      return null;
+    }
+
     limit += 10;
     const res = await fetchPosts(limit);
+
     if (res.success) {
+      if (posts?.length === res.data?.length) {
+        setHasmMore(false);
+      }
+
       setPosts(res.data);
     }
   };
@@ -92,24 +102,45 @@ function Home() {
           </View>
         </View>
         {/* posts */}
-        <FlatList
-          data={posts}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listStyle}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={(item) => (
-            <PostCard
-              item={item}
-              currentUser={user}
-              router={() => router}
-            />
-          )}
-          ListFooterComponent={
-            <View style={{ marginBottom: posts?.length === 0 ? 200 : 30 }}>
-              <Loading />
-            </View>
-          }
-        />
+
+        {posts && posts.length > 0 ? (
+          <FlatList
+            // TODO:FIX:when first posts loading, the FLatlist will re-call the getPosts(),until the Posts data revive,
+            // it's destory the getPost'limit ,should add some logic to control rendering the FlatList
+            data={posts}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listStyle}
+            keyExtractor={(item) => item.id.toString()}
+            initialNumToRender={10}
+            onEndReached={() => {
+              console.log("Got to the end");
+              getPosts();
+            }}
+            onEndReachedThreshold={0}
+            renderItem={(item) => (
+              <PostCard
+                item={item}
+                currentUser={user}
+                router={() => router}
+              />
+            )}
+            ListFooterComponent={
+              hasMore ? (
+                <View style={{ marginBottom: posts?.length === 0 ? 200 : 30 }}>
+                  <Loading />
+                </View>
+              ) : (
+                <View style={{ marginVertical: 30 }}>
+                  <Text style={styles.noPosts}>No more posts</Text>
+                </View>
+              )
+            }
+          />
+        ) : (
+          <View style={{ marginTop: 200 }}>
+            <Loading />
+          </View>
+        )}
       </View>
     </ScreenWrapper>
   );

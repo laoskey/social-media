@@ -36,6 +36,7 @@ export const createOrUpdatePost = async (post: any) => {
   }
 };
 export const fetchPosts = async (limit = 10) => {
+  console.log("FETCH POST", limit);
   try {
     const { data, error } = await supabase
       .from("posts")
