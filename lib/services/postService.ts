@@ -40,7 +40,7 @@ export const fetchPosts = async (limit = 10) => {
   try {
     const { data, error } = await supabase
       .from("posts")
-      .select("*,user:users(id,name,image)")
+      .select("*,user:users(id,name,image),post_likes(*)")
       .order("created_at", { ascending: false })
       .limit(limit);
 
@@ -55,6 +55,47 @@ export const fetchPosts = async (limit = 10) => {
     return {
       success: false,
       msg: "Could not fetch the post",
+    };
+  }
+};
+
+export const removePostLike = async (postId: any, userId: any) => {
+  try {
+    const { data, error } = await supabase
+      .from("post_likes")
+      .delete()
+      .eq("userId", userId)
+      .eq("postId", postId);
+
+    if (error) {
+      console.log("[POST_REMOVE_LIKE_ERROR]", error);
+      return { success: false, msg: "could not remove  the posts like" };
+    }
+
+    return { success: true, data: data };
+  } catch (error) {
+    console.log("[POST_REMOVE_LIKE_ERROR]:", error);
+    return {
+      success: false,
+      msg: "Could not remove the post like ",
+    };
+  }
+};
+export const createPostLike = async (postLike: any) => {
+  try {
+    const { data, error } = await supabase.from("post_likes").insert(postLike).select().single();
+
+    if (error) {
+      console.log("[POST_LIKE_ERROR]", error);
+      return { success: false, msg: "could not like the posts" };
+    }
+
+    return { success: true, data: data };
+  } catch (error) {
+    console.log("[POST_LIKE_ERROR]:", error);
+    return {
+      success: false,
+      msg: "Could not like the post",
     };
   }
 };
