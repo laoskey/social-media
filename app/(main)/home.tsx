@@ -121,7 +121,7 @@ function Home() {
               <PostCard
                 item={item}
                 currentUser={user}
-                router={() => router}
+                // router={() => router}
               />
             )}
             ListFooterComponent={

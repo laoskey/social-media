@@ -12,6 +12,7 @@ import { downloadFile, getSupabaseFileUrl } from "@/lib/services/imageService";
 import { AVPlaybackSource, ResizeMode, Video } from "expo-av";
 import { createPostLike, removePostLike } from "@/lib/services/postService";
 import Loading from "./Loading";
+import { router } from "expo-router";
 
 const textStyle = {
   color: theme.colors.dark,
@@ -32,14 +33,14 @@ const tagStyles = {
 interface PostCardProps {
   item: any;
   currentUser: User | null;
-  router: () => void;
+  // router: () => void;
   hasShadow?: boolean;
 }
 interface Like {
   userId: string;
   postId: string;
 }
-function PostCard({ item, currentUser, router, hasShadow = true }: PostCardProps) {
+function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
   const [likes, setLikes] = useState<Like[]>([]);
   const [loading, setLoading] = useState(false);
   const shandowStyle = {
@@ -55,6 +56,12 @@ function PostCard({ item, currentUser, router, hasShadow = true }: PostCardProps
   const createdAt = moment(item.item.created_at).format("MMM D");
   const openPostDetails = () => {
     // TODO
+    router.push({
+      pathname: "/(main)/postDetails",
+      params: {
+        postId: item.item.id,
+      },
+    });
   };
 
   const onLike = async () => {
@@ -174,7 +181,7 @@ function PostCard({ item, currentUser, router, hasShadow = true }: PostCardProps
           <Text style={styles.count}>{likes?.length}</Text>
         </View>
         <View style={styles.fotterButton}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={openPostDetails}>
             <Icon
               name="comment"
               size={24}
