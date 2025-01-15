@@ -1,16 +1,17 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Share } from "react-native";
 import React, { useEffect, useState } from "react";
 import { User } from "@/lib/contexts/AuthContext";
 import { theme } from "@/constants/theme";
-import { hp, wp } from "@/lib/helpers/common";
+import { hp, stripHTMLTags, wp } from "@/lib/helpers/common";
 import Avatar from "./Avatar";
 import moment from "moment";
 import Icon from "@/assets/hugeicons";
 import RenderHtml from "react-native-render-html";
 import { Image } from "expo-image";
-import { getSupabaseFileUrl } from "@/lib/services/imageService";
+import { downloadFile, getSupabaseFileUrl } from "@/lib/services/imageService";
 import { AVPlaybackSource, ResizeMode, Video } from "expo-av";
 import { createPostLike, removePostLike } from "@/lib/services/postService";
+import Loading from "./Loading";
 
 const textStyle = {
   color: theme.colors.dark,
@@ -40,6 +41,7 @@ interface Like {
 }
 function PostCard({ item, currentUser, router, hasShadow = true }: PostCardProps) {
   const [likes, setLikes] = useState<Like[]>([]);
+  const [loading, setLoading] = useState(false);
   const shandowStyle = {
     shadowOffset: {
       width: 0,
@@ -81,6 +83,20 @@ function PostCard({ item, currentUser, router, hasShadow = true }: PostCardProps
         Alert.alert("Post", "Something went wrong");
       }
     }
+  };
+
+  const onShare = async () => {
+    // TODO:FIX: cant share the image
+    let content: { message: any; url?: string } = { message: stripHTMLTags(item.item.body) };
+    if (item.item.file && item.item.file !== undefined) {
+      // download the file then share the local uri
+      const filePath = getSupabaseFileUrl(item.item.file)?.uri;
+      setLoading(true);
+      let url = await downloadFile(filePath);
+      setLoading(false);
+      content.url = url as string;
+    }
+    Share.share(content);
   };
 
   useEffect(() => {
@@ -168,13 +184,17 @@ function PostCard({ item, currentUser, router, hasShadow = true }: PostCardProps
           <Text style={styles.count}>{0}</Text>
         </View>
         <View style={styles.fotterButton}>
-          <TouchableOpacity>
-            <Icon
-              name="share"
-              size={24}
-              color={theme.colors.textLight}
-            />
-          </TouchableOpacity>
+          {loading ? (
+            <Loading size="small" />
+          ) : (
+            <TouchableOpacity onPress={onShare}>
+              <Icon
+                name="share"
+                size={24}
+                color={theme.colors.textLight}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </View>

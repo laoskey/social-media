@@ -53,3 +53,19 @@ export const getSupabaseFileUrl = (filepath: string) => {
 
   return null;
 };
+
+export const downloadFile = async (url: any) => {
+  try {
+    const { uri } = await FileSystemm.downloadAsync(url, getLocalFilePath(url));
+
+    return uri;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getLocalFilePath = (filePath: string) => {
+  let fileName = filePath.split("/").pop();
+
+  return `${FileSystemm.documentDirectory}${fileName}`;
+};
