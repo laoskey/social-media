@@ -35,6 +35,28 @@ export const createOrUpdatePost = async (post: any) => {
     };
   }
 };
+export const fetchPostDetails = async (postId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*,user:users(id,name,image),post_likes(*)")
+      .eq("id", postId)
+      .single();
+
+    if (error) {
+      console.log("[FETCH_POST_DETAILS_ERROR]", error);
+      return { success: false, msg: "could not fetch the post detail" };
+    }
+
+    return { success: true, data: data };
+  } catch (error) {
+    console.log("[FETCH_POST_DETAILS_ERROR]:", error);
+    return {
+      success: false,
+      msg: "Could not fetch the post",
+    };
+  }
+};
 export const fetchPosts = async (limit = 10) => {
   console.log("FETCH POST", limit);
   try {
@@ -46,7 +68,7 @@ export const fetchPosts = async (limit = 10) => {
 
     if (error) {
       console.log("[FETCH_POST_ERROR]", error);
-      return { success: false, msg: "could not fetch the posts" };
+      return { success: false, msg: "could not fetch the post details" };
     }
 
     return { success: true, data: data };
@@ -54,7 +76,7 @@ export const fetchPosts = async (limit = 10) => {
     console.log("[FETCH_POST_ERROR]:", error);
     return {
       success: false,
-      msg: "Could not fetch the post",
+      msg: "Could not fetch the post detail",
     };
   }
 };

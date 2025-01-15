@@ -30,7 +30,7 @@ const tagStyles = {
   },
 };
 
-interface PostCardProps {
+interface PostCardForDetailsProps {
   item: any;
   currentUser: User | null;
   // router: () => void;
@@ -40,7 +40,7 @@ interface Like {
   userId: string;
   postId: string;
 }
-function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
+function PostCardForDetails({ item, currentUser, hasShadow = true }: PostCardForDetailsProps) {
   const [likes, setLikes] = useState<Like[]>([]);
   const [loading, setLoading] = useState(false);
   const shandowStyle = {
@@ -53,13 +53,13 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
     elevation: 1,
   };
 
-  const createdAt = moment(item.item.created_at).format("MMM D");
+  const createdAt = moment(item.created_at).format("MMM D");
   const openPostDetails = () => {
     // TODO
     router.push({
       pathname: "/(main)/postDetails",
       params: {
-        postId: item.item.id,
+        postId: item.id,
       },
     });
   };
@@ -72,16 +72,16 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
     if (liked) {
       let updateLikes = likes.filter((like) => like.userId !== currentUser?.id);
       setLikes([...updateLikes]);
-      let res = await removePostLike(item.item.id, currentUser?.id);
+      let res = await removePostLike(item.id, currentUser?.id);
 
-      console.log("remove res:", res);
+      // console.log("remove res:", res);
       if (!res.success) {
         Alert.alert("Post", "Something went wrong");
       }
     } else {
       let data = {
         userId: currentUser?.id as string,
-        postId: item.item.id as string,
+        postId: item.id as string,
       };
       setLikes([...likes, data]);
       let res = await createPostLike(data);
@@ -94,10 +94,10 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
 
   const onShare = async () => {
     // TODO:FIX: cant share the image
-    let content: { message: any; url?: string } = { message: stripHTMLTags(item.item.body) };
-    if (item.item.file && item.item.file !== undefined) {
+    let content: { message: any; url?: string } = { message: stripHTMLTags(item.body) };
+    if (item.file && item.file !== undefined) {
       // download the file then share the local uri
-      const filePath = getSupabaseFileUrl(item.item.file)?.uri;
+      const filePath = getSupabaseFileUrl(item.file)?.uri;
       setLoading(true);
       let url = await downloadFile(filePath);
       setLoading(false);
@@ -107,7 +107,7 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
   };
 
   useEffect(() => {
-    setLikes(item.item.post_likes);
+    setLikes(item.post_likes);
   }, []);
   // console.log(item);
   const liked = likes.filter((like) => like?.userId === currentUser?.id)[0] ? true : false;
@@ -118,11 +118,11 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
         <View style={styles.userInfo}>
           <Avatar
             size={hp(4.5)}
-            uri={item.item.user.image}
+            uri={item.user.image}
             rounded={theme.radius.md}
           />
           <View style={{ gap: 2 }}>
-            <Text style={styles.username}>{item.item.user.name}</Text>
+            <Text style={styles.username}>{item.user.name}</Text>
             <Text style={styles.postTime}>{createdAt}</Text>
           </View>
         </View>
@@ -139,28 +139,28 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
       {/* post body and meddia */}
       <View style={styles.content}>
         <View style={styles.postBody}>
-          {item.item.body && (
+          {item.body && (
             <RenderHtml
               contentWidth={wp(100)}
-              source={{ html: item.item.body }}
+              source={{ html: item.body }}
               tagsStyles={tagStyles}
             />
           )}
         </View>
         {/* post image */}
-        {item?.item?.file && item?.item?.file.includes("postImages") && (
+        {item?.file && item?.file.includes("postImages") && (
           <Image
-            source={getSupabaseFileUrl(item.item.file)}
+            source={getSupabaseFileUrl(item.file)}
             transition={100}
             style={styles.postMedia}
             contentFit="cover"
           />
         )}
         {/* post media */}
-        {item?.item?.file && item?.item?.file.includes("postVideos") && (
+        {item?.file && item?.file.includes("postVideos") && (
           <Video
             style={[styles.postMedia, { height: hp(30) }]}
-            source={getSupabaseFileUrl(item?.item?.file) as AVPlaybackSource}
+            source={getSupabaseFileUrl(item?.file) as AVPlaybackSource}
             useNativeControls
             resizeMode={ResizeMode.COVER}
             isLooping
@@ -208,7 +208,7 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
   );
 }
 
-export default PostCard;
+export default PostCardForDetails;
 
 const styles = StyleSheet.create({
   count: { color: theme.colors.text, fontSize: hp(1.8) },

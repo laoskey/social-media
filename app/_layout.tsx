@@ -7,14 +7,5 @@ LogBox.ignoreLogs([
   "Warning: TNodeChildrenRenderer",
 ]);
 export default function RootLayout() {
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="postDetails"
-        options={{
-          presentation: "modal",
-        }}
-      />
-    </Stack>
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
