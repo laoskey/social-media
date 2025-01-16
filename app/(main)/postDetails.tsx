@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Platform } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { createComment, fetchPostDetails } from "@/lib/services/postService";
@@ -11,10 +11,13 @@ import { hp, wp } from "@/lib/helpers/common";
 import { theme } from "@/constants/theme";
 import Input from "@/components/TextInput";
 import Icon from "@/assets/hugeicons";
+import CommentItem from "@/components/CommentItem";
+import Header from "@/components/Header";
 
 interface Post {
   id?: string;
   comments?: [];
+  userId?: string;
 }
 
 interface PostDetailsProps {}
@@ -58,11 +61,16 @@ function PostDetails() {
     setLoading(false);
 
     if (res.success) {
+      console.log("res:", res.data);
       inputRef?.current?.clear();
       commentRef.current = "";
     } else {
       Alert.alert("Comment", res.msg);
     }
+  };
+
+  const onDeleteComment = async (comment: any) => {
+    console.log("comment", comment);
   };
 
   if (startLoading) {
@@ -72,8 +80,22 @@ function PostDetails() {
       </View>
     );
   }
+
+  if (!post) {
+    return (
+      <View style={[styles.center, { justifyContent: "flex-start", marginTop: 100 }]}>
+        <Text style={styles.notFound}>Post not found !</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
+      {/* TODO:Fixed the style of header */}
+      {Platform.OS === "android" && (
+        <View style={{ paddingHorizontal: wp(4), marginTop: -30, marginBottom: 15 }}>
+          <Header title="Post" />
+        </View>
+      )}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.list}
@@ -111,6 +133,19 @@ function PostDetails() {
           )}
         </View>
         {/* Recent comments list */}
+        <View style={{ marginVertical: 15, gap: 17 }}>
+          {post?.comments?.map((comment: { created_at?: string; userId?: string }) => (
+            <CommentItem
+              onDelete={onDeleteComment}
+              item={comment}
+              key={comment?.created_at?.toString()}
+              canDelete={user?.id === comment.userId || user?.id === post.userId}
+            />
+          ))}
+          {post.comments?.length === 0 && (
+            <Text style={{ color: theme.colors.text, marginLeft: 5 }}>Be first to comment !</Text>
+          )}
+        </View>
       </ScrollView>
     </View>
   );
