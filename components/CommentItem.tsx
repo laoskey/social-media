@@ -5,6 +5,7 @@ import { theme } from "@/constants/theme";
 import Avatar from "./Avatar";
 import moment from "moment";
 import Icon from "@/assets/hugeicons";
+import { useAuth } from "@/lib/contexts/AuthContext";
 
 interface CommentItemProps {
   item: any;
@@ -12,9 +13,17 @@ interface CommentItemProps {
   onDelete: (item: any) => {};
 }
 function CommentItem({ item, canDelete, onDelete }: CommentItemProps) {
-  //   console.log(item);
+  const { user } = useAuth();
   const createdAt = moment(item.created_at).format("MMM d");
 
+  const commentOwnerStyle =
+    user?.id === item.users.id
+      ? {
+          backgroundColor: "rgba(81, 207, 102,0.65)",
+        }
+      : { backgroundColor: "rgba(0,0,0,0.06)" };
+
+  console.log(commentOwnerStyle);
   const handleDelete = () => {
     Alert.alert("Cnnfirm", "Are you want to delete this comment?", [
       { text: "cancle", onPress: () => console.log("modal cancelled"), style: "cancel" },
@@ -24,7 +33,7 @@ function CommentItem({ item, canDelete, onDelete }: CommentItemProps) {
   return (
     <View style={styles.containner}>
       <Avatar uri={item.users.image} />
-      <View style={styles.content}>
+      <View style={[styles.content, commentOwnerStyle]}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <View style={styles.nameContainer}>
             <Text style={styles.text}>{item?.users.name}</Text>
