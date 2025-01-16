@@ -109,7 +109,6 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
   useEffect(() => {
     setLikes(item.item.post_likes);
   }, []);
-  // console.log(item);
   const liked = likes.filter((like) => like?.userId === currentUser?.id)[0] ? true : false;
   return (
     <View style={[styles.container, hasShadow && shandowStyle]}>
@@ -188,7 +187,7 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
               color={theme.colors.textLight}
             />
           </TouchableOpacity>
-          <Text style={styles.count}>{0}</Text>
+          <Text style={styles.count}>{item.item.comments[0].count}</Text>
         </View>
         <View style={styles.fotterButton}>
           {loading ? (

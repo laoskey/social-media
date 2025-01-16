@@ -35,12 +35,18 @@ interface PostCardForDetailsProps {
   currentUser: User | null;
   // router: () => void;
   hasShadow?: boolean;
+  showMoreIcon?: boolean;
 }
 interface Like {
   userId: string;
   postId: string;
 }
-function PostCardForDetails({ item, currentUser, hasShadow = true }: PostCardForDetailsProps) {
+function PostCardForDetails({
+  item,
+  currentUser,
+  hasShadow = true,
+  showMoreIcon = true,
+}: PostCardForDetailsProps) {
   const [likes, setLikes] = useState<Like[]>([]);
   const [loading, setLoading] = useState(false);
   const shandowStyle = {
@@ -52,10 +58,11 @@ function PostCardForDetails({ item, currentUser, hasShadow = true }: PostCardFor
     shadowRadius: 6,
     elevation: 1,
   };
-
   const createdAt = moment(item.created_at).format("MMM D");
   const openPostDetails = () => {
-    // TODO
+    if (!showMoreIcon) {
+      return null;
+    }
     router.push({
       pathname: "/(main)/postDetails",
       params: {
@@ -109,8 +116,8 @@ function PostCardForDetails({ item, currentUser, hasShadow = true }: PostCardFor
   useEffect(() => {
     setLikes(item.post_likes);
   }, []);
-  // console.log(item);
   const liked = likes.filter((like) => like?.userId === currentUser?.id)[0] ? true : false;
+  // console.log("POST_ITEM", item);
   return (
     <View style={[styles.container, hasShadow && shandowStyle]}>
       <View style={styles.header}>
@@ -126,14 +133,16 @@ function PostCardForDetails({ item, currentUser, hasShadow = true }: PostCardFor
             <Text style={styles.postTime}>{createdAt}</Text>
           </View>
         </View>
-        <TouchableOpacity onPress={openPostDetails}>
-          <Icon
-            name="threeDotsHorizontal"
-            size={hp(3.4)}
-            strokeWidth={3}
-            color={theme.colors.text}
-          />
-        </TouchableOpacity>
+        {showMoreIcon && (
+          <TouchableOpacity onPress={openPostDetails}>
+            <Icon
+              name="threeDotsHorizontal"
+              size={hp(3.4)}
+              strokeWidth={3}
+              color={theme.colors.text}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* post body and meddia */}
@@ -188,7 +197,7 @@ function PostCardForDetails({ item, currentUser, hasShadow = true }: PostCardFor
               color={theme.colors.textLight}
             />
           </TouchableOpacity>
-          <Text style={styles.count}>{0}</Text>
+          <Text style={styles.count}>{item.comments[0].count}</Text>
         </View>
         <View style={styles.fotterButton}>
           {loading ? (

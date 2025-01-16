@@ -13,6 +13,7 @@ import { theme } from "@/constants/theme";
 import { hp } from "@/lib/helpers/common";
 
 function Input(props: any) {
+  // console.log(props.containerStyle);
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

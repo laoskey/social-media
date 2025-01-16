@@ -39,8 +39,9 @@ export const fetchPostDetails = async (postId: string) => {
   try {
     const { data, error } = await supabase
       .from("posts")
-      .select("*,user:users(id,name,image),post_likes(*)")
+      .select("*,user:users(id,name,image),post_likes(*),comments(*,users(id,name,image))")
       .eq("id", postId)
+      .order("created_at", { ascending: false, foreignTable: "comments" })
       .single();
 
     if (error) {
@@ -62,7 +63,7 @@ export const fetchPosts = async (limit = 10) => {
   try {
     const { data, error } = await supabase
       .from("posts")
-      .select("*,user:users(id,name,image),post_likes(*)")
+      .select("*,user:users(id,name,image),post_likes(*),comments(count)")
       .order("created_at", { ascending: false })
       .limit(limit);
 
@@ -103,6 +104,7 @@ export const removePostLike = async (postId: any, userId: any) => {
     };
   }
 };
+
 export const createPostLike = async (postLike: any) => {
   try {
     const { data, error } = await supabase.from("post_likes").insert(postLike).select().single();
@@ -118,6 +120,24 @@ export const createPostLike = async (postLike: any) => {
     return {
       success: false,
       msg: "Could not like the post",
+    };
+  }
+};
+export const createComment = async (comment: any) => {
+  try {
+    const { data, error } = await supabase.from("comments").insert(comment).select().single();
+
+    if (error) {
+      console.log("[CREATE_COMMENT_ERROR]", error);
+      return { success: false, msg: "could not create the comments" };
+    }
+
+    return { success: true, data: data };
+  } catch (error) {
+    console.log("[CREATE_COMMENT_ERROR]:", error);
+    return {
+      success: false,
+      msg: "Could not create the comment",
     };
   }
 };

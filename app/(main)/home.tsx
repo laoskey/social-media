@@ -34,6 +34,7 @@ function Home() {
   };
   useEffect(() => {
     //TODO: Refresh posts
+    // TOTO:Add postlike channel to refresh post_likes
     let postChannel = supabase
       .channel("posts")
       .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, handlePostEvent)

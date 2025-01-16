@@ -5,6 +5,8 @@ import { supabase } from "@/lib/supabase";
 import { router, Stack } from "expo-router";
 import { User } from "@supabase/supabase-js";
 import { getUserData } from "@/lib/services/useService";
+import { JsStack } from "@/components/JsStack";
+import { TransitionPresets } from "@react-navigation/stack";
 
 const _layout = () => {
   return (
@@ -51,10 +53,20 @@ function MainLayout() {
         headerShown: false,
       }}
     >
-      <Stack.Screen
+      {/* <Stack.Screen
         name="postDetails"
         options={{
           presentation: "modal",
+        }}
+      /> */}
+      {/* TODO:the  presentation:"modal" doesn't work in Android, need manually config postDetails styles in the furture */}
+      <JsStack.Screen
+        key={"postDetails"}
+        name="postDetails"
+        options={{
+          ...TransitionPresets.ModalPresentationIOS,
+          presentation: "modal",
+          gestureEnabled: true,
         }}
       />
     </Stack>
