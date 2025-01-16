@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Platform } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { createComment, fetchPostDetails } from "@/lib/services/postService";
+import { createComment, fetchPostDetails, removeComment } from "@/lib/services/postService";
 import Loading from "@/components/Loading";
 import PostCard from "@/components/PostCard";
 import { ScrollView } from "react-native";
@@ -13,6 +13,8 @@ import Input from "@/components/TextInput";
 import Icon from "@/assets/hugeicons";
 import CommentItem from "@/components/CommentItem";
 import Header from "@/components/Header";
+import { supabase } from "@/lib/supabase";
+import { getUserData } from "@/lib/services/useService";
 
 interface Post {
   id?: string;
@@ -31,8 +33,40 @@ function PostDetails() {
   const commentRef = useRef("");
 
   useEffect(() => {
+    //TODO: Refresh posts
+    // TOTO:Add postlike channel to refresh post_likes
+    let commentChannel = supabase
+      .channel("comments")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "comments", filter: `postId=eq.${postId}` },
+        handleCommentEvent
+      )
+      .subscribe();
+    // getPosts();
     getPostDetails();
+
+    return () => {
+      supabase.removeChannel(commentChannel);
+    };
   }, []);
+
+  const handleCommentEvent = async (payload: any) => {
+    console.log("Gow new comment", payload.new);
+    if (payload.new) {
+      let newComment = { ...payload.new };
+      let res = await getUserData(newComment.userId);
+      newComment.users = res.success ? res.data : {};
+      // console.log(newComment.users);
+
+      setPost((prePost: any) => {
+        return {
+          ...prePost,
+          comments: [newComment, ...prePost.comments],
+        };
+      });
+    }
+  };
   const getPostDetails = async () => {
     // fetch post details
     let res = await fetchPostDetails(postId as string);
@@ -61,7 +95,7 @@ function PostDetails() {
     setLoading(false);
 
     if (res.success) {
-      console.log("res:", res.data);
+      // console.log("res:", res.data);
       inputRef?.current?.clear();
       commentRef.current = "";
     } else {
@@ -70,7 +104,17 @@ function PostDetails() {
   };
 
   const onDeleteComment = async (comment: any) => {
-    console.log("comment", comment);
+    console.log("Deleting comment:", comment);
+    let res = await removeComment(comment.id);
+
+    if (res.success) {
+      let updatePost = { ...post };
+      updatePost.comments = updatePost.comments?.filter((c: { id: string }) => c.id !== comment.id) as
+        | [];
+      setPost(updatePost);
+    } else {
+      Alert.alert("Comment", res.msg);
+    }
   };
 
   if (startLoading) {

@@ -141,3 +141,21 @@ export const createComment = async (comment: any) => {
     };
   }
 };
+export const removeComment = async (commentId: string) => {
+  try {
+    const { error } = await supabase.from("comments").delete().eq("id", commentId);
+
+    if (error) {
+      console.log("[REMOVE_COMMENT_ERROR]", error);
+      return { success: false, msg: "could not remove the comment" };
+    }
+
+    return { success: true, msg: "comment has been deleted" };
+  } catch (error) {
+    console.log("[REMOVE_COMMENT_ERROR]:", error);
+    return {
+      success: false,
+      msg: "Could not remove the comment ",
+    };
+  }
+};
