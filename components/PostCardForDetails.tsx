@@ -36,6 +36,9 @@ interface PostCardForDetailsProps {
   // router: () => void;
   hasShadow?: boolean;
   showMoreIcon?: boolean;
+  showDelete?: boolean;
+  onDelete: (item: any) => void;
+  onEdit?: (item: any) => void;
 }
 interface Like {
   userId: string;
@@ -46,6 +49,9 @@ function PostCardForDetails({
   currentUser,
   hasShadow = true,
   showMoreIcon = true,
+  showDelete = false,
+  onDelete,
+  onEdit,
 }: PostCardForDetailsProps) {
   const [likes, setLikes] = useState<Like[]>([]);
   const [loading, setLoading] = useState(false);
@@ -112,7 +118,12 @@ function PostCardForDetails({
     }
     Share.share(content);
   };
-
+  const handleDelete = () => {
+    Alert.alert("Cnnfirm", "Are you want to delete this post?", [
+      { text: "cancle", onPress: () => console.log("modal cancelled"), style: "cancel" },
+      { text: "Delete", onPress: () => onDelete(item), style: "destructive" },
+    ]);
+  };
   useEffect(() => {
     setLikes(item.post_likes);
   }, []);
@@ -142,6 +153,26 @@ function PostCardForDetails({
               color={theme.colors.text}
             />
           </TouchableOpacity>
+        )}
+        {showDelete && currentUser?.id === item.userId && (
+          <View style={styles.actions}>
+            <TouchableOpacity onPress={onEdit}>
+              <Icon
+                name="edit"
+                size={hp(2.5)}
+                strokeWidth={3}
+                color={theme.colors.text}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleDelete}>
+              <Icon
+                name="delete"
+                size={hp(2.5)}
+                strokeWidth={3}
+                color={theme.colors.rose}
+              />
+            </TouchableOpacity>
+          </View>
         )}
       </View>
 

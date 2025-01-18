@@ -116,7 +116,12 @@ function PostDetails() {
       Alert.alert("Comment", res.msg);
     }
   };
-
+  const onDeletePost = async (item: any) => {
+    console.log("DELETE_POST:", item);
+  };
+  const onEditPost = async (item: any) => {
+    console.log("EDIT_POST:", item);
+  };
   if (startLoading) {
     return (
       <View style={styles.center}>
@@ -150,6 +155,9 @@ function PostDetails() {
           currentUser={user}
           hasShadow={false}
           showMoreIcon={false}
+          showDelete={true}
+          onDelete={onDeletePost}
+          onEdit={onEditPost}
         />
         {/* Comment input */}
         <View style={styles.inputContent}>

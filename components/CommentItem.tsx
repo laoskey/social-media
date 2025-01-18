@@ -23,7 +23,7 @@ function CommentItem({ item, canDelete, onDelete }: CommentItemProps) {
         }
       : { backgroundColor: "rgba(0,0,0,0.06)" };
 
-  console.log(commentOwnerStyle);
+  // console.log(commentOwnerStyle);
   const handleDelete = () => {
     Alert.alert("Cnnfirm", "Are you want to delete this comment?", [
       { text: "cancle", onPress: () => console.log("modal cancelled"), style: "cancel" },
