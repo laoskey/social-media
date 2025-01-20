@@ -23,7 +23,7 @@ function Home() {
   const [hasMore, setHasmMore] = useState(true);
 
   const handlePostEvent = async (payload: any) => {
-    console.log("Got ost event", payload);
+    console.log("Got ost  ", payload);
 
     if (payload.eventType === "INSERT" && payload.new.id) {
       let newPost = { ...payload.new };
@@ -33,7 +33,6 @@ function Home() {
       newPost.comments = [{ count: 0 }];
       newPost.user = res.success ? res.data : {};
       setPosts((prePosts: any) => [newPost, ...prePosts]);
-      console.log("INSERTPOST", posts); // []
     }
     if (payload.eventType === "DELETE" && payload.old.id) {
       // refetch the posts data

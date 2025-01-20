@@ -120,7 +120,7 @@ function PostDetails() {
     // delete the post
     const res = await removePost(post?.id as string);
     if (res.success) {
-      console.log(res.data);
+      // console.log(res.data);
       router.back();
     } else {
       Alert.alert("Post", res.msg);

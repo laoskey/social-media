@@ -1,5 +1,14 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Pressable } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Pressable,
+  FlatList,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import BackButton from "@/components/BackButton";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { useAuth } from "@/lib/contexts/AuthContext";
@@ -11,10 +20,15 @@ import Icon from "@/assets/hugeicons";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
 import Avatar from "@/components/Avatar";
+import { fetchPosts } from "@/lib/services/postService";
+import PostCard from "@/components/PostCard";
 
+var limit = 0;
 interface ProfileProps {}
 function Profile() {
   const { user, setAuth } = useAuth();
+  const [posts, setPosts] = useState<any[] | undefined>([]);
+  const [hasMore, setHasmMore] = useState(true);
   const router = useRouter();
 
   const onLogout = async () => {
@@ -25,6 +39,22 @@ function Profile() {
     }
   };
 
+  const getPosts = async () => {
+    if (!hasMore) {
+      return null;
+    }
+
+    limit += 10;
+    const res = await fetchPosts(limit, user?.id);
+
+    if (res.success) {
+      if (posts?.length === res.data?.length) {
+        setHasmMore(false);
+      }
+
+      setPosts(res.data);
+    }
+  };
   const handleLogout = async () => {
     Alert.alert("Cnnfirm", "Are you want to lo out?", [
       { text: "cancle", onPress: () => console.log("modal cancelled"), style: "cancel" },
@@ -35,15 +65,51 @@ function Profile() {
     return <Loading />;
   }
 
+  useEffect(() => {
+    getPosts();
+  }, []);
   return (
     <ScreenWrapper bg="white">
-      <ScrollView>
-        <UserHeader
-          user={user}
-          router={router}
-          onPress={handleLogout}
-        />
-      </ScrollView>
+      <FlatList
+        // TODO:FIX:when first posts loading, the FLatlist will re-call the getPosts(),until the Posts data revive,
+        // it's destory the getPost'limit ,should add some logic to control rendering the FlatList
+        ListHeaderComponent={
+          <UserHeader
+            user={user}
+            router={router}
+            onPress={handleLogout}
+          />
+        }
+        ListHeaderComponentStyle={{ marginBottom: 30 }}
+        data={posts}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listStyle}
+        keyExtractor={(item) => item.id.toString()}
+        initialNumToRender={10}
+        onEndReached={() => {
+          console.log("Got to the end");
+          getPosts();
+        }}
+        onEndReachedThreshold={0}
+        renderItem={(item) => (
+          <PostCard
+            item={item}
+            currentUser={user}
+            // router={() => router}
+          />
+        )}
+        ListFooterComponent={
+          hasMore ? (
+            <View style={{ marginBottom: posts?.length === 0 ? 200 : 30 }}>
+              <Loading />
+            </View>
+          ) : (
+            <View style={{ marginVertical: 30 }}>
+              <Text style={styles.noPosts}>No more posts</Text>
+            </View>
+          )
+        }
+      />
     </ScreenWrapper>
   );
 }

@@ -121,8 +121,7 @@ function NewPost() {
     // create post
     setLoading(true);
     let res = await createOrUpdatePost(data);
-    console.log("RES", res);
-    console.log("DATA:", data);
+
     setLoading(false);
 
     if (res.success) {
