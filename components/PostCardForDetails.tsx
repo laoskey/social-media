@@ -38,7 +38,7 @@ interface PostCardForDetailsProps {
   showMoreIcon?: boolean;
   showDelete?: boolean;
   onDelete: (item: any) => void;
-  onEdit?: (item: any) => void;
+  onEdit: (item: any) => void;
 }
 interface Like {
   userId: string;
@@ -156,7 +156,7 @@ function PostCardForDetails({
         )}
         {showDelete && currentUser?.id === item.userId && (
           <View style={styles.actions}>
-            <TouchableOpacity onPress={onEdit}>
+            <TouchableOpacity onPress={() => onEdit(item)}>
               <Icon
                 name="edit"
                 size={hp(2.5)}

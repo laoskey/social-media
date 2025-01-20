@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable, Alert } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CustomButton from "@/components/Button";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Header from "@/components/Header";
@@ -8,7 +8,7 @@ import { hp, wp } from "@/lib/helpers/common";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import Avatar from "@/components/Avatar";
 import RichTextEditor from "@/components/RichTextEditor";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import Icon from "@/assets/hugeicons";
 import * as ImagePicker from "expo-image-picker";
 import { getSupabaseFileUrl } from "@/lib/services/imageService";
@@ -18,14 +18,36 @@ import { createOrUpdatePost } from "@/lib/services/postService";
 import { RichEditor } from "react-native-pell-rich-editor";
 
 interface NewPostProps {}
+interface Data {
+  file: ImagePicker.ImagePickerAsset | null;
+  body: string;
+  userId: string | undefined;
+  id?: string;
+}
+interface PostParams extends Record<string, any> {
+  id: string;
+  body: string;
+  file: ImagePicker.ImagePickerAsset | null;
+}
 function NewPost() {
+  const post = useLocalSearchParams<PostParams>();
+  console.log("Edit", post);
   const { user } = useAuth();
   const bodyRef = useRef("");
   const editorRef = useRef<RichEditor>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
+  useEffect(() => {
+    if (post && post.id) {
+      console.log(1);
+      bodyRef.current = post.body;
+      setFile(post.file || null);
+      setTimeout(() => editorRef.current?.setContentHTML(post.body), 300);
+    }
+  }, []);
   const onPick = async (isImage: boolean) => {
     let mediaConfig = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -88,14 +110,19 @@ function NewPost() {
       Alert.alert("Post", "Please choose an image or add post body");
     }
 
-    let data = {
+    let data: Data = {
       file,
       body: bodyRef.current,
       userId: user?.id,
     };
+    if (post && post.id) {
+      data.id = post.id;
+    }
     // create post
     setLoading(true);
     let res = await createOrUpdatePost(data);
+    console.log("RES", res);
+    console.log("DATA:", data);
     setLoading(false);
 
     if (res.success) {
@@ -186,7 +213,7 @@ function NewPost() {
           </View>
         </ScrollView>
         <CustomButton
-          title="Post "
+          title={post && post.id ? "Update" : "Post"}
           buttonStyle={{ height: hp(6.2) }}
           loading={loading}
           hasShadow={false}

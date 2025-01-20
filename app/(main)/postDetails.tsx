@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Platform } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { createComment, fetchPostDetails, removeComment } from "@/lib/services/postService";
+import { router, useLocalSearchParams } from "expo-router";
+import { createComment, fetchPostDetails, removeComment, removePost } from "@/lib/services/postService";
 import Loading from "@/components/Loading";
 import PostCard from "@/components/PostCard";
 import { ScrollView } from "react-native";
@@ -117,10 +117,19 @@ function PostDetails() {
     }
   };
   const onDeletePost = async (item: any) => {
-    console.log("DELETE_POST:", item);
+    // delete the post
+    const res = await removePost(post?.id as string);
+    if (res.success) {
+      console.log(res.data);
+      router.back();
+    } else {
+      Alert.alert("Post", res.msg);
+    }
   };
   const onEditPost = async (item: any) => {
-    console.log("EDIT_POST:", item);
+    router.back();
+
+    router.push({ pathname: "/(main)/newPost", params: { ...item } });
   };
   if (startLoading) {
     return (

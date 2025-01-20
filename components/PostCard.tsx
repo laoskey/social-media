@@ -109,6 +109,7 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
   useEffect(() => {
     setLikes(item.item.post_likes);
   }, []);
+
   const liked = likes.filter((like) => like?.userId === currentUser?.id)[0] ? true : false;
   return (
     <View style={[styles.container, hasShadow && shandowStyle]}>

@@ -81,7 +81,24 @@ export const fetchPosts = async (limit = 10) => {
     };
   }
 };
+export const removePost = async (postId: string) => {
+  try {
+    const { error } = await supabase.from("posts").delete().eq("id", postId);
 
+    if (error) {
+      console.log("[REMOVE_POST_ERROR]", error);
+      return { success: false, msg: "could not remove the post" };
+    }
+
+    return { success: true, msg: "post has been deleted", data: { postId } };
+  } catch (error) {
+    console.log("[REMOVE_POST_ERROR]:", error);
+    return {
+      success: false,
+      msg: "Could not remove the post ",
+    };
+  }
+};
 export const removePostLike = async (postId: any, userId: any) => {
   try {
     const { data, error } = await supabase
@@ -141,6 +158,7 @@ export const createComment = async (comment: any) => {
     };
   }
 };
+
 export const removeComment = async (commentId: string) => {
   try {
     const { error } = await supabase.from("comments").delete().eq("id", commentId);

@@ -23,13 +23,36 @@ function Home() {
   const [hasMore, setHasmMore] = useState(true);
 
   const handlePostEvent = async (payload: any) => {
-    // console.log("Got ost event", payload);
-    if (payload.eventType === "INSERT") {
+    console.log("Got ost event", payload);
+
+    if (payload.eventType === "INSERT" && payload.new.id) {
       let newPost = { ...payload.new };
       let res = await getUserData(newPost.userId);
 
+      newPost.post_likes = []; //Fixed:fixed  the property name error  caused the insert bug
+      newPost.comments = [{ count: 0 }];
       newPost.user = res.success ? res.data : {};
       setPosts((prePosts: any) => [newPost, ...prePosts]);
+      console.log("INSERTPOST", posts); // []
+    }
+    if (payload.eventType === "DELETE" && payload.old.id) {
+      // refetch the posts data
+      setPosts((prePosts) => {
+        let updatePosts = prePosts?.filter((post: { id: string }) => post.id !== payload.old.id);
+        return updatePosts;
+      });
+    }
+    if (payload.eventType === "UPDATE" && payload.new.id) {
+      setPosts((prePosts) => {
+        let updatePost = prePosts?.map((post) => {
+          if (post.id === payload.new.id) {
+            post.body = payload.new.body;
+            post.file = payload.new.file;
+          }
+          return post;
+        });
+        return updatePost;
+      });
     }
   };
   useEffect(() => {
