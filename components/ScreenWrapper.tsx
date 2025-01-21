@@ -1,9 +1,6 @@
 import { View, Text, ScrollView } from "react-native";
 import React from "react";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface ScreenWrapperProps {
   children: React.ReactNode;

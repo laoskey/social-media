@@ -21,6 +21,7 @@ function Home() {
   const [posts, setPosts] = useState<any[] | undefined>([]);
   const router = useRouter();
   const [hasMore, setHasmMore] = useState(true);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const handlePostEvent = async (payload: any) => {
     console.log("Got ost  ", payload);
@@ -54,6 +55,12 @@ function Home() {
       });
     }
   };
+  const handleNewNotification = async (payload: any) => {
+    console.log("Got ost  ", payload);
+    if (payload.eventType === "INSERT" && payload.new.id) {
+      setNotificationCount((pre) => pre + 1);
+    }
+  };
   useEffect(() => {
     //TODO: Refresh posts
     // TOTO:Add postlike channel to refresh post_likes
@@ -61,10 +68,24 @@ function Home() {
       .channel("posts")
       .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, handlePostEvent)
       .subscribe();
+    let notificationChannel = supabase
+      .channel("notifications")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `receiverId=eq.${user?.id}`,
+        },
+        handleNewNotification
+      )
+      .subscribe();
     getPosts();
 
     return () => {
       supabase.removeChannel(postChannel);
+      supabase.removeChannel(notificationChannel);
     };
   }, []);
 
@@ -99,6 +120,11 @@ function Home() {
                 strokeWidth={2}
                 color={theme.colors.text}
               />
+              {notificationCount > 0 && (
+                <View style={styles.pill}>
+                  <Text style={styles.pillText}>{notificationCount}</Text>
+                </View>
+              )}
             </Pressable>
             <Pressable onPress={() => router.push("/(main)/newPost")}>
               <Icon

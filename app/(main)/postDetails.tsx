@@ -15,6 +15,7 @@ import CommentItem from "@/components/CommentItem";
 import Header from "@/components/Header";
 import { supabase } from "@/lib/supabase";
 import { getUserData } from "@/lib/services/useService";
+import { createNotification } from "@/lib/services/notificationService";
 
 interface Post {
   id?: string;
@@ -24,7 +25,7 @@ interface Post {
 
 interface PostDetailsProps {}
 function PostDetails() {
-  const { postId } = useLocalSearchParams();
+  const { postId, commentId } = useLocalSearchParams();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(false);
   const [startLoading, setStartLoading] = useState(true);
@@ -95,7 +96,20 @@ function PostDetails() {
     setLoading(false);
 
     if (res.success) {
-      // console.log("res:", res.data);
+      if (user?.id !== post.userId) {
+        // send notification
+        let notify = {
+          senderId: user?.id,
+          receiverId: post.userId,
+          title: "commented on your post",
+          data: JSON.stringify({
+            postId: post.id,
+            commentId: res?.data?.id,
+          }),
+        };
+        createNotification(notify);
+      }
+
       inputRef?.current?.clear();
       commentRef.current = "";
     } else {
@@ -150,7 +164,7 @@ function PostDetails() {
     <View style={styles.container}>
       {/* TODO:Fixed the style of header */}
       {Platform.OS === "android" && (
-        <View style={{ paddingHorizontal: wp(4), marginTop: -30, marginBottom: 15 }}>
+        <View style={{ paddingHorizontal: wp(4), marginTop: -10, marginBottom: 15 }}>
           <Header title="Post" />
         </View>
       )}
@@ -195,14 +209,17 @@ function PostDetails() {
         </View>
         {/* Recent comments list */}
         <View style={{ marginVertical: 15, gap: 17 }}>
-          {post?.comments?.map((comment: { created_at?: string; userId?: string }) => (
-            <CommentItem
-              onDelete={onDeleteComment}
-              item={comment}
-              key={comment?.created_at?.toString()}
-              canDelete={user?.id === comment.userId || user?.id === post.userId}
-            />
-          ))}
+          {post?.comments?.map((comment: { created_at?: string; userId?: string; id?: string }) => {
+            return (
+              <CommentItem
+                onDelete={onDeleteComment}
+                item={comment}
+                key={comment?.created_at?.toString()}
+                canDelete={user?.id === comment.userId || user?.id === post.userId}
+                highLight={commentId == comment.id}
+              />
+            );
+          })}
           {post.comments?.length === 0 && (
             <Text style={{ color: theme.colors.text, marginLeft: 5 }}>Be first to comment !</Text>
           )}

@@ -11,8 +11,9 @@ interface CommentItemProps {
   item: any;
   canDelete?: boolean;
   onDelete: (item: any) => {};
+  highLight?: boolean;
 }
-function CommentItem({ item, canDelete, onDelete }: CommentItemProps) {
+function CommentItem({ item, canDelete, onDelete, highLight = false }: CommentItemProps) {
   const { user } = useAuth();
   const createdAt = moment(item.created_at).format("MMM d");
 
@@ -33,7 +34,8 @@ function CommentItem({ item, canDelete, onDelete }: CommentItemProps) {
   return (
     <View style={styles.containner}>
       <Avatar uri={item.users.image} />
-      <View style={[styles.content, commentOwnerStyle]}>
+      {/* TODO:HighLight doesnt work  */}
+      <View style={[styles.content, commentOwnerStyle, highLight && styles.highlight]}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <View style={styles.nameContainer}>
             <Text style={styles.text}>{item?.users.name}</Text>
@@ -71,9 +73,8 @@ const styles = StyleSheet.create({
   },
   highlight: {
     borderWidth: 0.2,
-    borderColor: "white",
+    backgroundColor: "white",
     borderCurve: "continuous",
-
     shadowColor: theme.colors.dark,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
