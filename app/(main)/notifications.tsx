@@ -9,6 +9,7 @@ import { theme } from "@/constants/theme";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import NotificationItem from "@/components/NotificationItem";
 import Header from "@/components/Header";
+import { supabase } from "@/lib/supabase";
 
 interface NotificationsProps {}
 function Notifications() {
@@ -21,8 +22,33 @@ function Notifications() {
   const [notifications, setNotifications] = useState<any[] | undefined>([]);
   const { user } = useAuth();
 
+  const handlenotificationEvent = async (payload: any) => {
+    console.log("Got ost", payload);
+    if (payload.eventType === "DELETE" && payload.old.id) {
+      // refetch the posts data
+      setNotifications((preNotify) => {
+        let updateNotifications = preNotify?.filter(
+          (notify: { id: string }) => notify.id !== payload.old.id
+        );
+        return updateNotifications;
+      });
+    }
+  };
   useEffect(() => {
+    let notificationChannel = supabase
+      .channel("notifications")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "notifications" },
+        handlenotificationEvent
+      )
+      .subscribe();
+
     getNotifications();
+
+    return () => {
+      supabase.removeChannel(notificationChannel);
+    };
   }, []);
 
   const getNotifications = async () => {

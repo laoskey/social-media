@@ -40,3 +40,21 @@ export const fetchNotifications = async (receiverId: string) => {
     };
   }
 };
+export const removeNotification = async (notificationId: string) => {
+  try {
+    const { error } = await supabase.from("notifications").delete().eq("id", notificationId);
+
+    if (error) {
+      console.log("[REMOVE_NOTIFICATION_ERROR]", error);
+      return { success: false, msg: "could not remove the notification" };
+    }
+
+    return { success: true, msg: "notification has been deleted", data: { notificationId } };
+  } catch (error) {
+    console.log("[REMOVE_NOTIFICATION_ERROR]:", error);
+    return {
+      success: false,
+      msg: "Could not remove the notification ",
+    };
+  }
+};

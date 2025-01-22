@@ -5,13 +5,18 @@ import { hp } from "@/lib/helpers/common";
 import Avatar from "./Avatar";
 import moment from "moment";
 import { router } from "expo-router";
+import { removeNotification } from "@/lib/services/notificationService";
 
 interface NotificationItemProps {
   item: any;
   router?: () => void;
 }
 function NotificationItem({ item }: NotificationItemProps) {
-  const handleClick = () => {
+  const handleClick = async () => {
+    const res = await removeNotification(item?.id);
+    if (!res.success) {
+      console.log("Notification", res.msg);
+    }
     // open post detais
     let { postId, commentId } = JSON.parse(item?.data);
     router.push({
