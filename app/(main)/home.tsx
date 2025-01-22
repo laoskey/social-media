@@ -55,12 +55,24 @@ function Home() {
       });
     }
   };
+  // TODO:requeirements:
+  // 1.notification count  can be fetch in real time
+  // 2.when user touch the notification component,the notification count can be 0
+  // 3.when user go in to the notification screen, and touch the notification item,
+  // 3.1>user can route to the relation post
+  // 3.2>and remove this notification in notifications screen
   const handleNewNotification = async (payload: any) => {
     console.log("Got ost  ", payload);
     if (payload.eventType === "INSERT" && payload.new.id) {
       setNotificationCount((pre) => pre + 1);
     }
   };
+
+  const handlePostLikes = async (payload: any) => {
+    console.log("Got ost  ", payload);
+    // TODO： add the logic to update the like on posts
+  };
+
   useEffect(() => {
     //TODO: Refresh posts
     // TOTO:Add postlike channel to refresh post_likes
@@ -81,11 +93,29 @@ function Home() {
         handleNewNotification
       )
       .subscribe();
+    let postLikeChannel = supabase
+      .channel("post_likes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "post_likes",
+        },
+        handlePostLikes
+      )
+      .subscribe();
     getPosts();
+
+    // TODO:post like fetch in real time: ?check the userID?
+    // 1> add the insert and delete event channnel on post_likes table
+    // 2> when user insert the like ,update the post_like property on posts
+    // 3> when user delete the like , return the posts without this deleted lilke
 
     return () => {
       supabase.removeChannel(postChannel);
       supabase.removeChannel(notificationChannel);
+      supabase.removeChannel(postLikeChannel);
     };
   }, []);
 
@@ -113,7 +143,12 @@ function Home() {
         <View style={styles.header}>
           <Text style={styles.title}>LinkUp</Text>
           <View style={styles.icons}>
-            <Pressable onPress={() => router.push("/(main)/notifications")}>
+            <Pressable
+              onPress={() => {
+                setNotificationCount(0);
+                router.push("/(main)/notifications");
+              }}
+            >
               <Icon
                 name="heart"
                 size={hp(3.2)}
