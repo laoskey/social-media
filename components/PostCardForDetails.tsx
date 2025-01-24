@@ -70,7 +70,7 @@ function PostCardForDetails({
       return null;
     }
     router.push({
-      pathname: "/(main)/postDetails",
+      pathname: "/(main)/toasts/postDetails",
       params: {
         postId: item.id,
       },

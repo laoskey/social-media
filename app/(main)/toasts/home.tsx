@@ -146,7 +146,7 @@ function Home() {
             <Pressable
               onPress={() => {
                 setNotificationCount(0);
-                router.push("/(main)/notifications");
+                router.push("/(main)/toasts/notifications");
               }}
             >
               <Icon
@@ -161,7 +161,7 @@ function Home() {
                 </View>
               )}
             </Pressable>
-            <Pressable onPress={() => router.push("/(main)/newPost")}>
+            <Pressable onPress={() => router.push("/(main)/toasts/newPost")}>
               <Icon
                 name="plus"
                 size={hp(3.2)}
@@ -169,7 +169,7 @@ function Home() {
                 color={theme.colors.text}
               />
             </Pressable>
-            <Pressable onPress={() => router.push("/(main)/profile")}>
+            <Pressable onPress={() => router.push("/(main)/toasts/profile")}>
               {/* <Icon
                   name="user"
                   size={hp(3.2)}

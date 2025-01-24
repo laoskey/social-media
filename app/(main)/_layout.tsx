@@ -28,7 +28,7 @@ function MainLayout() {
         // console.log(session.user);
         updateUserData(session.user, session.user.email as string);
         // move to home screen
-        router.replace("/(main)/home");
+        router.replace("/(main)/toasts/home");
       } else {
         // set auth null
         setAuth(null);

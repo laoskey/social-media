@@ -20,7 +20,7 @@ function NotificationItem({ item }: NotificationItemProps) {
     // open post detais
     let { postId, commentId } = JSON.parse(item?.data);
     router.push({
-      pathname: "/(main)/postDetails",
+      pathname: "/(main)/toasts/postDetails",
       params: {
         postId,
         commentId,

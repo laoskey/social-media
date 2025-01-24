@@ -57,7 +57,7 @@ function PostCard({ item, currentUser, hasShadow = true }: PostCardProps) {
   const openPostDetails = () => {
     // TODO
     router.push({
-      pathname: "/(main)/postDetails",
+      pathname: "/(main)/toasts/postDetails",
       params: {
         postId: item.item.id,
       },
