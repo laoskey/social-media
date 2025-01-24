@@ -24,7 +24,7 @@ function Welecome() {
         />
         {/* App name and punchline */}
         <View style={{ gap: 20 }}>
-          <Text style={styles.title}>LinkUp!</Text>
+          <Text style={styles.title}>Toasts!</Text>
           <Text style={styles.punchline}>
             From breaking news and entertainment to sports and politics, get the full story with all the
             live commentary.
