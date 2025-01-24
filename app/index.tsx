@@ -35,7 +35,7 @@ function index() {
       <CustomButton
         title="Go Piex"
         buttonStyle={{ width: hp(30) }}
-        onPress={() => router.push("/(main)/(piexs)/index")}
+        onPress={() => router.push("/(main)/(piexs)")}
       />
     </View>
   );

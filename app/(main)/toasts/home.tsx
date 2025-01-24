@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, ScrollView, Alert, Pressable, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  Pressable,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import CustomButton from "@/components/Button";
@@ -141,7 +150,9 @@ function Home() {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Toasts</Text>
+          <TouchableOpacity onPress={() => router.push("/(main)/(piexs)")}>
+            <Text style={styles.title}>Toasts</Text>
+          </TouchableOpacity>
           <View style={styles.icons}>
             <Pressable
               onPress={() => {
