@@ -150,7 +150,7 @@ function Home() {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.push("/(main)/(piexs)")}>
+          <TouchableOpacity onPress={() => router.push("/(main)/piexs")}>
             <Text style={styles.title}>Toasts</Text>
           </TouchableOpacity>
           <View style={styles.icons}>
