@@ -1,17 +1,26 @@
 import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/helpers/common";
+import Categories from "@/components/pixels/Categories";
 
 interface PixelHomeProps {}
 function PixelHome() {
   const [search, setSearch] = useState<string | null>("");
+  const [activeCategory, setActiveCategory] = useState(null);
+  const searchInputRef = useRef(null);
   const { top } = useSafeAreaInsets();
   const paddingTop = top > 0 ? top + 10 : 30;
+
+  const handleChangeCategory = (cat: any) => {
+    setActiveCategory(cat);
+  };
+
+  // console.log("active", activeCategory);
   return (
-    <View style={[styles.container, { padding: paddingTop }]}>
+    <View style={[styles.container, { paddingTop: paddingTop }]}>
       {/* Header */}
       <View style={styles.header}>
         <Pressable>
@@ -40,14 +49,29 @@ function PixelHome() {
             placeholder="Search for photos..."
             style={styles.searchInput}
             onChangeText={(value) => setSearch(value)}
+            ref={searchInputRef}
           />
-          <Pressable style={styles.closeIcon}>
-            <Ionicons
-              name="close"
-              size={24}
-              color={theme.colors.netural(0.5)}
-            />
-          </Pressable>
+
+          {search && (
+            <Pressable
+              style={styles.closeIcon}
+              //   onPress={() => setSearch("")}
+            >
+              <Ionicons
+                name="close"
+                size={24}
+                color={theme.colors.netural(0.5)}
+              />
+            </Pressable>
+          )}
+        </View>
+
+        {/* Categories */}
+        <View style={styles.categories}>
+          <Categories
+            activeCategory={activeCategory}
+            handleChangeCategory={handleChangeCategory}
+          />
         </View>
       </ScrollView>
     </View>
@@ -59,7 +83,8 @@ export default PixelHome;
 const styles = StyleSheet.create({
   container: { flex: 1, gap: 15 },
   header: {
-    marginHorizontal: wp(1),
+    marginHorizontal: wp(4),
+
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -70,7 +95,7 @@ const styles = StyleSheet.create({
     color: theme.colors.netural(0.9),
   },
   searchBar: {
-    marginHorizontal: wp(1),
+    marginHorizontal: wp(4),
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -94,4 +119,5 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: theme.radius.sm,
   },
+  categories: {},
 });
