@@ -19,7 +19,7 @@ function WelecomeScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
       <Image
-        source={require("@/assets/images/welcome2.jpg")}
+        source={require("@/assets/images/welcome3.png")}
         resizeMode="cover"
         style={styles.bgImage}
       />
@@ -49,8 +49,20 @@ function WelecomeScreen() {
             Every pixel tells a story
           </Animated.Text>
           <Animated.View entering={FadeIn.delay(600).springify()}>
-            <Pressable style={styles.startbutton}>
+            <Pressable
+              style={styles.startbutton}
+              onPress={() => router.push("/(main)/piexs/home")}
+            >
               <Text style={styles.startText}>Start Explore</Text>
+            </Pressable>
+          </Animated.View>
+          <Animated.View entering={FadeIn.delay(700).springify()}>
+            <Pressable
+              onPress={() => {
+                router.push("/(main)/toasts/home");
+              }}
+            >
+              <Text style={styles.home}>Go Toasts</Text>
             </Pressable>
           </Animated.View>
         </View>
@@ -94,10 +106,11 @@ const styles = StyleSheet.create({
     fontWeight: theme.fonts.medium as "500",
   },
   startbutton: {
-    marginBottom: 50,
+    marginBottom: 45,
     backgroundColor: theme.colors.netural(0.9),
     padding: 15,
     paddingHorizontal: 90,
+
     borderRadius: theme.radius.xl,
     borderCurve: "continuous",
   },
@@ -106,5 +119,10 @@ const styles = StyleSheet.create({
     fontSize: hp(3),
     fontWeight: theme.fonts.medium as "500",
     letterSpacing: 1,
+  },
+  home: {
+    color: theme.colors.textLight,
+    fontWeight: theme.fonts.semibold as "600",
+    paddingBottom: 4,
   },
 });

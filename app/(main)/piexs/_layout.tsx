@@ -7,6 +7,10 @@ export default function PiexLayout() {
         options={{ headerShown: false }}
         name="index"
       />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="home"
+      />
     </Stack>
   );
 }
