@@ -12,3 +12,14 @@ export const wp = (percentage: number) => {
 export const stripHTMLTags = (html: any) => {
   return html.replace(/<[^>]*>?/gm, "");
 };
+
+export const getColumeCount = () => {
+  if (deviceWidth >= 1024) {
+    return 4; //desktop
+  } else if (deviceWidth >= 768) {
+    return 3; // tablet
+  } else {
+    // phone
+    return 2;
+  }
+};

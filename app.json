@@ -12,6 +12,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.laoskee.socialmedia",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/avatar.jpg",
         "backgroundColor": "#ffffff"
@@ -19,7 +20,7 @@
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
+      "output": "single",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [

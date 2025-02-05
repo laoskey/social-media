@@ -30,7 +30,7 @@ function PixelHome() {
         setImages([...res.data.hits]);
       }
     }
-    // console.log(images[0]);
+    // console.log(images.length);
   };
   const handleChangeCategory = (cat: any) => {
     setActiveCategory(cat);
@@ -91,7 +91,7 @@ function PixelHome() {
           />
         </View>
         {/* Images grid */}
-        <View>{images.length > 0 && <ImageGrid />}</View>
+        <View>{images.length > 0 && <ImageGrid images={images} />}</View>
       </ScrollView>
     </View>
   );
