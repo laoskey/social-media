@@ -1,24 +1,41 @@
 import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/helpers/common";
 import Categories from "@/components/pixels/Categories";
+import { apiCall } from "@/lib/api";
+import ImageGrid from "@/components/pixels/ImageGrid";
 
 interface PixelHomeProps {}
 function PixelHome() {
   const [search, setSearch] = useState<string | null>("");
   const [activeCategory, setActiveCategory] = useState(null);
+  const [images, setImages] = useState<any>([]);
   const searchInputRef = useRef(null);
   const { top } = useSafeAreaInsets();
   const paddingTop = top > 0 ? top + 10 : 30;
 
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
+  const fetchImages = async (params = { page: 1 }, append = true) => {
+    const res = await apiCall(params);
+    if (res.success && res?.data?.hits) {
+      if (append) {
+        setImages([...images, ...res.data.hits]);
+      } else {
+        setImages([...res.data.hits]);
+      }
+    }
+    // console.log(images[0]);
+  };
   const handleChangeCategory = (cat: any) => {
     setActiveCategory(cat);
   };
 
-  // console.log("active", activeCategory);
   return (
     <View style={[styles.container, { paddingTop: paddingTop }]}>
       {/* Header */}
@@ -73,6 +90,8 @@ function PixelHome() {
             handleChangeCategory={handleChangeCategory}
           />
         </View>
+        {/* Images grid */}
+        <View>{images.length > 0 && <ImageGrid />}</View>
       </ScrollView>
     </View>
   );

@@ -62,8 +62,8 @@ function MainLayout() {
       /> */}
       {/* TODO:the  presentation:"modal" doesn't work in Android, need manually config postDetails styles in the furture */}
       <JsStack.Screen
-        key={"postDetails"}
-        name="postDetails"
+        key={"toasts/postDetails"}
+        name="toasts/postDetails"
         options={{
           ...TransitionPresets.ModalPresentationIOS,
           presentation: "modal",
