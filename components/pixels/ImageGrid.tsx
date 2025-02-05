@@ -4,7 +4,7 @@ import { MasonryFlashList } from "@shopify/flash-list";
 import ImageCard from "./ImageCard";
 import { getColumeCount, wp } from "@/lib/helpers/common";
 
-export interface Image {
+export interface PixelImage {
   collections: number;
   comments: number;
   downloads: number;
@@ -29,7 +29,7 @@ export interface Image {
   webformatWidth: number;
 }
 interface ImageGridProps {
-  images: Image[];
+  images: PixelImage[];
 }
 function ImageGrid({ images }: ImageGridProps) {
   const columes = getColumeCount();

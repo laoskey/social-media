@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { theme } from "@/constants/theme";
@@ -8,9 +8,11 @@ import Categories from "@/components/pixels/Categories";
 import { apiCall } from "@/lib/api";
 import ImageGrid from "@/components/pixels/ImageGrid";
 
+import { debounce } from "lodash";
+
 interface PixelHomeProps {}
 function PixelHome() {
-  const [search, setSearch] = useState<string | null>("");
+  const [search, setSearch] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState(null);
   const [images, setImages] = useState<any>([]);
   const searchInputRef = useRef(null);
@@ -35,6 +37,11 @@ function PixelHome() {
   const handleChangeCategory = (cat: any) => {
     setActiveCategory(cat);
   };
+
+  const handleSearch = (text: string) => {
+    console.log("search for", text);
+  };
+  const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
 
   return (
     <View style={[styles.container, { paddingTop: paddingTop }]}>
@@ -65,14 +72,16 @@ function PixelHome() {
           <TextInput
             placeholder="Search for photos..."
             style={styles.searchInput}
-            onChangeText={(value) => setSearch(value)}
+            value={search}
+            onChangeText={handleTextDebounce}
+            // onChangeText={(value) => setSearch(value)}
             ref={searchInputRef}
           />
 
           {search && (
             <Pressable
               style={styles.closeIcon}
-              //   onPress={() => setSearch("")}
+              onPress={() => setSearch("")}
             >
               <Ionicons
                 name="close"
