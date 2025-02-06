@@ -39,6 +39,22 @@ function PixelHome() {
   };
   const handleChangeCategory = (cat: any) => {
     setActiveCategory(cat);
+    clearSearch();
+    setImages([]);
+
+    page = 1;
+
+    let params: {
+      page: number;
+      category?: string;
+    } = {
+      page,
+    };
+
+    if (cat) {
+      params.category = cat;
+    }
+    fetchImages(params, false);
   };
 
   const handleSearch = (text: string) => {
@@ -49,12 +65,14 @@ function PixelHome() {
       // search for this text
       page = 1;
       setImages([]);
+      setActiveCategory(null); // clear the category when user searching
       fetchImages({ page, q: text });
     }
     if (text === "") {
       // reset results
       page = 1;
       setImages([]);
+      setActiveCategory(null); // clear the category when user searching
       searchInputRef.current?.clear();
       fetchImages({ page });
     }
