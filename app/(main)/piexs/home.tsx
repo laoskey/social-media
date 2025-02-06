@@ -9,13 +9,15 @@ import { apiCall } from "@/lib/api";
 import ImageGrid from "@/components/pixels/ImageGrid";
 
 import { debounce } from "lodash";
+import { FA6Style } from "@expo/vector-icons/build/FontAwesome6";
 
+var page = 1;
 interface PixelHomeProps {}
 function PixelHome() {
   const [search, setSearch] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState(null);
   const [images, setImages] = useState<any>([]);
-  const searchInputRef = useRef(null);
+  const searchInputRef = useRef<TextInput>(null);
   const { top } = useSafeAreaInsets();
   const paddingTop = top > 0 ? top + 10 : 30;
 
@@ -23,7 +25,8 @@ function PixelHome() {
     fetchImages();
   }, []);
 
-  const fetchImages = async (params = { page: 1 }, append = true) => {
+  const fetchImages = async (params: { page: number; q?: string } = { page: 1 }, append = false) => {
+    console.log("parms:", params, append);
     const res = await apiCall(params);
     if (res.success && res?.data?.hits) {
       if (append) {
@@ -40,9 +43,28 @@ function PixelHome() {
 
   const handleSearch = (text: string) => {
     console.log("search for", text);
+    setSearch(text);
+
+    if (text.length > 2) {
+      // search for this text
+      page = 1;
+      setImages([]);
+      fetchImages({ page, q: text });
+    }
+    if (text === "") {
+      // reset results
+      page = 1;
+      setImages([]);
+      searchInputRef.current?.clear();
+      fetchImages({ page });
+    }
   };
   const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
 
+  const clearSearch = () => {
+    setSearch("");
+    searchInputRef.current?.clear();
+  };
   return (
     <View style={[styles.container, { paddingTop: paddingTop }]}>
       {/* Header */}
@@ -72,7 +94,7 @@ function PixelHome() {
           <TextInput
             placeholder="Search for photos..."
             style={styles.searchInput}
-            value={search}
+            // value={search}
             onChangeText={handleTextDebounce}
             // onChangeText={(value) => setSearch(value)}
             ref={searchInputRef}
@@ -81,7 +103,7 @@ function PixelHome() {
           {search && (
             <Pressable
               style={styles.closeIcon}
-              onPress={() => setSearch("")}
+              onPress={() => handleSearch("")}
             >
               <Ionicons
                 name="close"
