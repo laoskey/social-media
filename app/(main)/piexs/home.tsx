@@ -16,6 +16,7 @@ interface PixelHomeProps {}
 function PixelHome() {
   const [search, setSearch] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState(null);
+  const [filters, setFilters] = useState<any>(null);
   const [images, setImages] = useState<any>([]);
   const searchInputRef = useRef<TextInput>(null);
   const modalRef = useRef<BottomSheetModal>(null);
@@ -42,8 +43,53 @@ function PixelHome() {
   const openFilterModal = () => {
     modalRef.current?.present();
   };
-  const CloseFilterModal = () => {
+  const closeFilterModal = () => {
     modalRef.current?.close();
+  };
+
+  const handleApplyFliters = () => {
+    if (filters) {
+      page = 1;
+      setImages([]);
+      let params = {
+        page,
+        ...filters,
+      };
+
+      if (activeCategory) {
+        params.category = activeCategory;
+      }
+      if (search) {
+        params.q = search;
+      }
+
+      fetchImages(params, false);
+    }
+    closeFilterModal();
+  };
+
+  const handleResetFliters = () => {
+    if (filters) {
+      page = 1;
+      setFilters(null);
+      setImages([]);
+      let params: {
+        page: number;
+        category?: any;
+        q?: string;
+      } = {
+        page,
+      };
+      if (activeCategory) {
+        params.category = activeCategory;
+      }
+      if (search) {
+        params.q = search;
+      }
+
+      fetchImages(params, false);
+    }
+    closeFilterModal();
   };
   const handleChangeCategory = (cat: any) => {
     setActiveCategory(cat);
@@ -74,7 +120,7 @@ function PixelHome() {
       page = 1;
       setImages([]);
       setActiveCategory(null); // clear the category when user searching
-      fetchImages({ page, q: text });
+      fetchImages({ page, q: text, ...filters });
     }
     if (text === "") {
       // reset results
@@ -82,7 +128,7 @@ function PixelHome() {
       setImages([]);
       setActiveCategory(null); // clear the category when user searching
       searchInputRef.current?.clear();
-      fetchImages({ page });
+      fetchImages({ page, ...filters });
     }
   };
   const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
@@ -91,6 +137,7 @@ function PixelHome() {
     setSearch("");
     searchInputRef.current?.clear();
   };
+  console.log(filters);
   return (
     <View style={[styles.container, { paddingTop: paddingTop }]}>
       {/* Header */}
@@ -149,9 +196,17 @@ function PixelHome() {
         </View>
         {/* Images grid */}
         <View>{images.length > 0 && <ImageGrid images={images} />}</View>
+        {/* Loading TODO:*/}
       </ScrollView>
       {/* Filters modal */}
-      <FilterModal modalRef={modalRef} />
+      <FilterModal
+        modalRef={modalRef}
+        filters={filters}
+        setFilters={setFilters}
+        onClose={closeFilterModal}
+        onApply={handleApplyFliters}
+        onReset={handleResetFliters}
+      />
     </View>
   );
 }
