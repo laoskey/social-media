@@ -17,6 +17,7 @@ export const theme = {
     roleBG: "#fee2e2",
 
     border: "rgba(0, 0, 0, 0.1)",
+    backdrop: "rgba(0, 0, 0, 0.5)",
 
     // Piexs
     netural: (opacity: any) => `rgba(10,10,10,${opacity})`,

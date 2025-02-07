@@ -1,15 +1,15 @@
 import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { debounce } from "lodash";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Feather, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { theme } from "@/constants/theme";
 import { hp, wp } from "@/lib/helpers/common";
-import Categories from "@/components/pixels/Categories";
 import { apiCall } from "@/lib/api";
+import Categories from "@/components/pixels/Categories";
 import ImageGrid from "@/components/pixels/ImageGrid";
-
-import { debounce } from "lodash";
-import { FA6Style } from "@expo/vector-icons/build/FontAwesome6";
+import FilterModal from "@/components/pixels/FilterModal";
 
 var page = 1;
 interface PixelHomeProps {}
@@ -18,6 +18,8 @@ function PixelHome() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [images, setImages] = useState<any>([]);
   const searchInputRef = useRef<TextInput>(null);
+  const modalRef = useRef<BottomSheetModal>(null);
+
   const { top } = useSafeAreaInsets();
   const paddingTop = top > 0 ? top + 10 : 30;
 
@@ -36,6 +38,12 @@ function PixelHome() {
       }
     }
     // console.log(images.length);
+  };
+  const openFilterModal = () => {
+    modalRef.current?.present();
+  };
+  const CloseFilterModal = () => {
+    modalRef.current?.close();
   };
   const handleChangeCategory = (cat: any) => {
     setActiveCategory(cat);
@@ -90,7 +98,7 @@ function PixelHome() {
         <Pressable>
           <Text style={styles.title}>Pixels</Text>
         </Pressable>
-        <Pressable>
+        <Pressable onPress={openFilterModal}>
           <FontAwesome6
             name="bars-staggered"
             size={22}
@@ -142,6 +150,8 @@ function PixelHome() {
         {/* Images grid */}
         <View>{images.length > 0 && <ImageGrid images={images} />}</View>
       </ScrollView>
+      {/* Filters modal */}
+      <FilterModal modalRef={modalRef} />
     </View>
   );
 }
