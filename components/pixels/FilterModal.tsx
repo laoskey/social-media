@@ -3,7 +3,12 @@ import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { theme } from "@/constants/theme";
 import { BlurView } from "expo-blur";
-import Animated, { Extrapolation, interpolate, useAnimatedStyle } from "react-native-reanimated";
+import Animated, {
+  Extrapolation,
+  FadeInDown,
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { capitalize, hp } from "@/lib/helpers/common";
 import { ColorFilterRow, CommenFilterRow, SectionView } from "./FliterView";
 import { data } from "@/constants/data";
@@ -35,7 +40,12 @@ function FilterModal({ modalRef, filters, setFilters, onClose, onApply, onReset 
             let sectionData = data.filters[sectionName as SectionName];
             let title = capitalize(sectionName);
             return (
-              <View key={sectionName}>
+              <Animated.View
+                entering={FadeInDown.delay(index * 100 + 100)
+                  .springify()
+                  .damping(11)}
+                key={sectionName}
+              >
                 <SectionView
                   title={title}
                   content={sectionView({
@@ -45,12 +55,15 @@ function FilterModal({ modalRef, filters, setFilters, onClose, onApply, onReset 
                     filterName: sectionName,
                   })}
                 />
-              </View>
+              </Animated.View>
             );
           })}
 
           {/* Actions */}
-          <View style={styles.buttons}>
+          <Animated.View
+            entering={FadeInDown.delay(500).springify().damping(11)}
+            style={styles.buttons}
+          >
             <Pressable
               style={styles.resetButton}
               onPress={onReset}
@@ -63,7 +76,7 @@ function FilterModal({ modalRef, filters, setFilters, onClose, onApply, onReset 
             >
               <Text style={[styles.buttonText, { color: theme.colors.white }]}>Apply</Text>
             </Pressable>
-          </View>
+          </Animated.View>
         </View>
       </BottomSheetView>
     </BottomSheetModal>

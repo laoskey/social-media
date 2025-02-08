@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { debounce } from "lodash";
@@ -29,7 +37,7 @@ function PixelHome() {
   }, []);
 
   const fetchImages = async (params: { page: number; q?: string } = { page: 1 }, append = false) => {
-    console.log("parms:", params, append);
+    // console.log("parms:", params, append);
     const res = await apiCall(params);
     if (res.success && res?.data?.hits) {
       if (append) {
@@ -103,6 +111,7 @@ function PixelHome() {
       category?: string;
     } = {
       page,
+      ...filters,
     };
 
     if (cat) {
@@ -112,7 +121,7 @@ function PixelHome() {
   };
 
   const handleSearch = (text: string) => {
-    console.log("search for", text);
+    // console.log("search for", text);
     setSearch(text);
 
     if (text.length > 2) {
@@ -137,7 +146,33 @@ function PixelHome() {
     setSearch("");
     searchInputRef.current?.clear();
   };
-  console.log(filters);
+
+  const clearThisFilter = (filterName: string) => {
+    let filterc = { ...filters };
+    delete filterc[filterName];
+    setFilters({ ...filterc });
+
+    setImages([]);
+
+    page = 1;
+    let params: {
+      page: number;
+      category?: any;
+      q?: string;
+    } = {
+      page,
+      ...filterc,
+    };
+    if (activeCategory) {
+      params.category = activeCategory;
+    }
+    if (search) {
+      params.q = search;
+    }
+
+    fetchImages(params, false);
+  };
+  // console.log(filters);
   return (
     <View style={[styles.container, { paddingTop: paddingTop }]}>
       {/* Header */}
@@ -194,9 +229,47 @@ function PixelHome() {
             handleChangeCategory={handleChangeCategory}
           />
         </View>
+        {/* filters */}
+        {filters && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filters}
+          >
+            {Object.keys(filters).map((key, index) => {
+              return (
+                <View
+                  key={key}
+                  style={styles.filterItem}
+                >
+                  {key === "colors" ? (
+                    <View
+                      style={{ height: 30, width: 40, borderRadius: 7, backgroundColor: filters[key] }}
+                    />
+                  ) : (
+                    <Text style={styles.filterItemText}>{filters[key]}</Text>
+                  )}
+                  <Pressable
+                    style={styles.filterCloseIcon}
+                    onPress={() => clearThisFilter(key)}
+                  >
+                    <Ionicons
+                      name="close"
+                      size={14}
+                      color={theme.colors.netural(0.9)}
+                    />
+                  </Pressable>
+                </View>
+              );
+            })}
+          </ScrollView>
+        )}
         {/* Images grid */}
         <View>{images.length > 0 && <ImageGrid images={images} />}</View>
-        {/* Loading TODO:*/}
+        {/* Loading */}
+        <View style={{ marginBottom: 70, marginTop: images.length > 0 ? 10 : 70 }}>
+          <ActivityIndicator size={"large"} />
+        </View>
       </ScrollView>
       {/* Filters modal */}
       <FilterModal
@@ -253,4 +326,22 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.sm,
   },
   categories: {},
+  filters: { paddingHorizontal: wp(4), gap: 10 },
+  filterItem: {
+    backgroundColor: theme.colors.grayBg,
+    padding: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: theme.radius.xs,
+    gap: 10,
+    paddingHorizontal: 10,
+  },
+  filterItemText: {
+    fontSize: hp(1.4),
+  },
+  filterCloseIcon: {
+    backgroundColor: theme.colors.netural(0.2),
+    padding: 4,
+    borderRadius: 7,
+  },
 });
