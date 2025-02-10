@@ -15,6 +15,10 @@ export default function PiexLayout() {
             options={{ headerShown: false }}
             name="home"
           />
+          <Stack.Screen
+            options={{ headerShown: false, animation: "fade", presentation: "transparentModal" }}
+            name="image"
+          />
         </Stack>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>

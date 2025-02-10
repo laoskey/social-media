@@ -4,6 +4,7 @@ import { PixelImage } from "./ImageGrid";
 import { Image } from "expo-image";
 import { getImageSize, wp } from "@/lib/helpers/common";
 import { theme } from "@/constants/theme";
+import { router } from "expo-router";
 
 interface ImageCardProps {
   item: PixelImage;
@@ -19,7 +20,15 @@ function ImageCard({ item, index, columes }: ImageCardProps) {
     return { height: getImageSize(height, width) };
   };
   return (
-    <Pressable style={[styles.imageWrapper, !isLastRow() && styles.spaceing]}>
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: "/(main)/piexs/image",
+          params: { ...item },
+        })
+      }
+      style={[styles.imageWrapper, !isLastRow() && styles.spaceing]}
+    >
       <Image
         source={item.webformatURL}
         style={[styles.image, getImageHeight()]}

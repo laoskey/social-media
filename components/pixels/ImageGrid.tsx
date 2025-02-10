@@ -27,6 +27,7 @@ export interface PixelImage {
   webformatHeight: number;
   webformatURL: string;
   webformatWidth: number;
+  [key: string]: any;
 }
 interface ImageGridProps {
   images: PixelImage[];

@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
+  NativeSyntheticEvent,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,17 +19,19 @@ import { apiCall } from "@/lib/api";
 import Categories from "@/components/pixels/Categories";
 import ImageGrid from "@/components/pixels/ImageGrid";
 import FilterModal from "@/components/pixels/FilterModal";
+import { NativeScrollEvent } from "react-native";
 
 var page = 1;
 interface PixelHomeProps {}
 function PixelHome() {
   const [search, setSearch] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState(null);
+  const [isEndReached, setIsEndReached] = useState(false);
   const [filters, setFilters] = useState<any>(null);
   const [images, setImages] = useState<any>([]);
   const searchInputRef = useRef<TextInput>(null);
   const modalRef = useRef<BottomSheetModal>(null);
-
+  const scrollRef = useRef<ScrollView>(null);
   const { top } = useSafeAreaInsets();
   const paddingTop = top > 0 ? top + 10 : 30;
 
@@ -36,7 +39,7 @@ function PixelHome() {
     fetchImages();
   }, []);
 
-  const fetchImages = async (params: { page: number; q?: string } = { page: 1 }, append = false) => {
+  const fetchImages = async (params: { page: number; q?: string } = { page: 1 }, append = true) => {
     // console.log("parms:", params, append);
     const res = await apiCall(params);
     if (res.success && res?.data?.hits) {
@@ -172,12 +175,52 @@ function PixelHome() {
 
     fetchImages(params, false);
   };
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
+    const scrollOffset = event.nativeEvent.contentOffset.y;
+    const bottomPosition = contentHeight - scrollViewHeight;
+
+    if (scrollOffset >= bottomPosition - 1) {
+      if (!isEndReached) {
+        setIsEndReached(true);
+        // fetch more images
+        page++;
+        let params: {
+          page: number;
+          category?: any;
+          q?: string;
+        } = {
+          page,
+          ...filters,
+        };
+        if (activeCategory) {
+          params.category = activeCategory;
+        }
+        if (search) {
+          params.q = search;
+        }
+        console.log("reached end,page:", page);
+        fetchImages(params);
+      } else if (isEndReached) {
+        setIsEndReached(false);
+      }
+    }
+  };
+  const handleScrollUp = () => {
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+  };
+
   // console.log(filters);
   return (
     <View style={[styles.container, { paddingTop: paddingTop }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable>
+        <Pressable onPress={handleScrollUp}>
           <Text style={styles.title}>Pixels</Text>
         </Pressable>
         <Pressable onPress={openFilterModal}>
@@ -189,7 +232,12 @@ function PixelHome() {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={{ gap: 15 }}>
+      <ScrollView
+        onScroll={handleScroll}
+        scrollEventThrottle={5} // how often scroll event will fire whiel scrolling (in ms)
+        ref={scrollRef}
+        contentContainerStyle={{ gap: 15 }}
+      >
         {/* Search bar */}
         <View style={styles.searchBar}>
           <View style={styles.searchIcon}>
