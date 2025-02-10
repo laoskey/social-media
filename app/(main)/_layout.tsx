@@ -28,7 +28,8 @@ function MainLayout() {
         // console.log(session.user);
         updateUserData(session.user, session.user.email as string);
         // move to home screen
-        router.replace("/(main)/home");
+        router.push("/(main)/toasts/home");
+        // TODO:Modify the route
       } else {
         // set auth null
         setAuth(null);
@@ -61,8 +62,8 @@ function MainLayout() {
       /> */}
       {/* TODO:the  presentation:"modal" doesn't work in Android, need manually config postDetails styles in the furture */}
       <JsStack.Screen
-        key={"postDetails"}
-        name="postDetails"
+        key={"toasts/postDetails"}
+        name="toasts/postDetails"
         options={{
           ...TransitionPresets.ModalPresentationIOS,
           presentation: "modal",

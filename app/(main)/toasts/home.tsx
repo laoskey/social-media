@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, ScrollView, Alert, Pressable, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  Pressable,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import CustomButton from "@/components/Button";
@@ -141,12 +150,14 @@ function Home() {
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Toasts</Text>
+          <TouchableOpacity onPress={() => router.push("/(main)/piexs")}>
+            <Text style={styles.title}>Toasts</Text>
+          </TouchableOpacity>
           <View style={styles.icons}>
             <Pressable
               onPress={() => {
                 setNotificationCount(0);
-                router.push("/(main)/notifications");
+                router.push("/(main)/toasts/notifications");
               }}
             >
               <Icon
@@ -161,7 +172,7 @@ function Home() {
                 </View>
               )}
             </Pressable>
-            <Pressable onPress={() => router.push("/(main)/newPost")}>
+            <Pressable onPress={() => router.push("/(main)/toasts/newPost")}>
               <Icon
                 name="plus"
                 size={hp(3.2)}
@@ -169,7 +180,7 @@ function Home() {
                 color={theme.colors.text}
               />
             </Pressable>
-            <Pressable onPress={() => router.push("/(main)/profile")}>
+            <Pressable onPress={() => router.push("/(main)/toasts/profile")}>
               {/* <Icon
                   name="user"
                   size={hp(3.2)}

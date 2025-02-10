@@ -143,7 +143,7 @@ function PostDetails() {
   const onEditPost = async (item: any) => {
     router.back();
 
-    router.push({ pathname: "/(main)/newPost", params: { ...item } });
+    router.push({ pathname: "/(main)/toasts/newPost", params: { ...item } });
   };
   if (startLoading) {
     return (

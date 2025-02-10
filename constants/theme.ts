@@ -1,3 +1,5 @@
+import { opacity } from "react-native-reanimated/lib/typescript/Colors";
+
 export const theme = {
   colors: {
     primary: "#00c26f",
@@ -15,6 +17,13 @@ export const theme = {
     roleBG: "#fee2e2",
 
     border: "rgba(0, 0, 0, 0.1)",
+    backdrop: "rgba(0, 0, 0, 0.5)",
+
+    // Piexs
+    netural: (opacity: any) => `rgba(10,10,10,${opacity})`,
+    white: "#fff",
+    black: "#000",
+    grayBg: "#e5e5e5",
   },
   fonts: {
     medium: "500",

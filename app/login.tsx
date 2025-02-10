@@ -38,7 +38,7 @@ function Login() {
       return;
     }
 
-    router.push("/(main)/home");
+    router.push("/(main)/toasts/home");
   };
   return (
     <ScreenWrapper bg="white">
